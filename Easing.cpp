@@ -86,7 +86,9 @@ void CountEaseTimer(const Vector2* end, Vector2* current, Easing* easing) {
     }
 }
 
-void LinearInterpolation(const unsigned int start, const unsigned int end, unsigned int* current, const Easing* easing) {
+
+
+void ColorLinearInterpolation(const unsigned int start, const unsigned int end, unsigned int* current, const Easing* easing) {
     unsigned int startR = (start >> 24) & 0xff;
     unsigned int startG = (start >> 16) & 0xff;
     unsigned int startB = (start >> 8) & 0xff;

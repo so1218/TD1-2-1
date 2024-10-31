@@ -7,7 +7,7 @@ float EaseOutCirc(const float* timer);
 float EaseInOutCirc(float* timer);
 
 // 線形補間
-void LinearInterpolation(const unsigned int start, const unsigned int end, unsigned int* current, const Easing* easing);
+void ColorLinearInterpolation(const unsigned int start, const unsigned int end, unsigned int* current, const Easing* easing);
 
 void LinearInterpolation(const int start, const int end, int* current, const Easing* easing);
 
