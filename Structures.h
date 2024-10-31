@@ -6,8 +6,8 @@
 #include <time.h>
 #include <vector>
 
-const int kWindowWidth = 900;
-const int kWindowHeight = 700;
+const int kWindowWidth = 1280;
+const int kWindowHeight = 720;
 
 const int kPlayerParticleAmount = 16;
 const int kBackParticleAmount = 32;
@@ -134,8 +134,8 @@ struct MapChip :GameObject
 
 	Vector2 pos;
 
-	float height = 50.0f;
-	float width = 50.0f;
+	float height = 64.0f;
+	float width = 64.0f;
 
 	unsigned int color = WHITE;
 
@@ -223,9 +223,9 @@ struct ChangingColor
 //マップに関する構造体
 struct Map
 {
-	static const int kFloorWidth = 18;		//マップチップの横個数
-	static const int kFloorHeight = 14;	    //縦個数
-	static const int stageSum = 10;          //ステージの総数
+	static const int kFloorWidth = 20;		//マップチップの横個数
+	static const int kFloorHeight = 10;	    //縦個数
+	static const int stageSum = 4;          //ステージの総数
 	int stageNo = 0;                        //ステージのナンバリング。セレクトシーンで変更。
 
 	Easing easing;
@@ -277,8 +277,6 @@ struct Particle :GameObject, PhysicalElements
 	int emitterRange;
 	
 	int frameCount;
-
-	
 };
 
 //プレイヤーの周りにあるパーティクル
@@ -296,6 +294,8 @@ struct Player :GameObject, PhysicalElements
 	Particle particle[kPlayerParticleAmount];
 	Easing easing;
 	Vector2 scaleOnPtr[3];	
+
+	
 
 	//プレイヤーの向き
 	enum Direction
@@ -371,6 +371,13 @@ struct PlayScene :GameObject
 struct TitleScene
 {
 	GameManager* gm;
+	Easing fadeIn;
+	Easing fadeOut;
+	unsigned int transparent = 0x00000000;
+	unsigned int opaque = 0x000000FF;
+	unsigned int current = 0x00000000;
+
+	Easing colorEase;
 	
 	GameObject titleLogo;
 };

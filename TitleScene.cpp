@@ -1,5 +1,6 @@
 ﻿#include "Structures.h"
 #include "TitleScene.h"
+#include "Easing.h"
 #include "SelectScene.h"
 
 
@@ -12,11 +13,16 @@ Scene UpdateTitleScene(TitleScene* ts)
 
 	Scene nextScene = Title;
 
+
+
 	if (ts->gm->keys[DIK_SPACE] && !ts->gm->preKeys[DIK_SPACE])
 	{
 		InitSelectScene();
+	
 		nextScene = Select;
 	}
+
+	
 
 	return nextScene;
 
@@ -35,6 +41,9 @@ void ScreenPrintfTitleScene()
 //タイトルシーンの描画
 void DrawTitleScene(TitleScene* ts)
 {
+
+	Novice::DrawBox(0, 0, 1280, 720, 0.0f, ts->current, kFillModeSolid);
+
 	Novice::DrawQuad(
 		static_cast<int>(ts->titleLogo.sVertex.TL.x),
 		static_cast<int>(kWindowHeight - ts->titleLogo.sVertex.TL.y),

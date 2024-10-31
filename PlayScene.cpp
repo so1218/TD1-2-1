@@ -1,6 +1,7 @@
 ﻿#include "Structures.h"
 #include "Map.h"
 #include "Player.h"
+#include "Easing.h"
 #include "SelectScene.h"
 
 //========================================================
@@ -15,9 +16,13 @@ Scene UpdatePlayScene(PlayScene* ps, Player* player, GameManager* gm)
 
 	if (ps->gm->keys[DIK_SPACE] && !ps->gm->preKeys[DIK_SPACE])
 	{
+		
+
 		InitSelectScene();
 		nextScene = Select;
 	}
+
+	
 				
 	return nextScene;
 
