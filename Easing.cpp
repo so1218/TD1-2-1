@@ -34,6 +34,8 @@ void CountEaseTimer(Easing* easing) {
     }
 }
 
+// いえーい
+
 void CountEaseTimer(const unsigned int end, unsigned int* current, Easing* easing) {
     if (easing->timer > 1.0f) {
         *current = end;
