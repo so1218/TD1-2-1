@@ -22,7 +22,11 @@ Scene UpdateTitleScene(TitleScene* ts)
 		nextScene = Select;
 	}
 
-	
+
+	if (ts->gm->keys[DIK_G] && !ts->gm->preKeys[DIK_G])
+	{
+		
+	}
 
 	return nextScene;
 
