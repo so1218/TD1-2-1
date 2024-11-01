@@ -50,6 +50,6 @@ void CountCurveTimer(const int amount, Easing* easing) {
     }
     else {
         easing->timer += easing->cycle;
-        easing->easeTimer = EaseInOutCirc(&easing->timer);
+        easing->easeTimer = EaseInOutCirc(easing->timer);
     }
 }

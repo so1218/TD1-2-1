@@ -13,7 +13,11 @@ Scene UpdateTitleScene(TitleScene* ts)
 
 	Scene nextScene = Title;
 
-
+	//if (ts->fadeIn.isEase)
+	//{
+	//	ColorLinearInterpolation(BLACK, 0xffffff00, ts->current, ts->colorEase);
+	//	CountEaseTimer(ts->colorEase);
+	//}
 
 	if (ts->gm->keys[DIK_SPACE] && !ts->gm->preKeys[DIK_SPACE])
 	{
@@ -22,8 +26,16 @@ Scene UpdateTitleScene(TitleScene* ts)
 		nextScene = Select;
 	}
 
-	
+	if (ts->gm->keys[DIK_G] && !ts->gm->preKeys[DIK_G])
+	{
+		ts->colorEase.isEase = true;
+	}
 
+	if (ts->colorEase.isEase)
+	{
+		ColorLinearInterpolation(BLACK, 0xffffff00, ts->current, ts->colorEase);
+		CountEaseTimer(ts->colorEase);
+	}
 	return nextScene;
 
 }
@@ -67,6 +79,9 @@ void DrawTitleScene(TitleScene* ts)
 
 void InitTitleScene(TitleScene* ts) 
 {
+	ts->colorEase.isEase = false;
+	ts->fadeIn.isEase = true;
+
 	ts->titleLogo.pos.x = 450;
 	ts->titleLogo.pos.y = 500;
 

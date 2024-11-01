@@ -212,7 +212,7 @@ struct BitMapFont
 };
 
 //カラーの遷移演出などに関する構造体
-struct ChangingColor 
+struct ChangingColor
 {
 
 	unsigned int changingBackColor = BLACK;
@@ -323,6 +323,12 @@ struct Player :GameObject, PhysicalElements
 
 };
 
+//ボスの構造体
+struct Boss :GameObject, PhysicalElements
+{
+
+};
+
 
 
 //プレイシーンの構造体
@@ -375,7 +381,7 @@ struct TitleScene
 	Easing fadeOut;
 	unsigned int transparent = 0x00000000;
 	unsigned int opaque = 0x000000FF;
-	unsigned int current = 0x00000000;
+	unsigned int current = 0x000000ff;
 
 	Easing colorEase;
 	

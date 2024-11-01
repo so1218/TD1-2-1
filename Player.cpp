@@ -36,6 +36,7 @@ void MovePlayer(Player* player, GameManager* gm)
 	}
 
 	//キーボードでの移動
+
 	if (gm->keys[DIK_D])
 	{
 		player->pos.x += player->velocity.x;
