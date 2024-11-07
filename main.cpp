@@ -8,6 +8,7 @@
 #include "TitleScene.h"
 #include "SelectScene.h"
 #include "PlayScene.h"
+#include "Boss.h"
 #include "GrovalAudio.h"
 
 const char kWindowTitle[] = "TD2";
@@ -41,6 +42,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Player player;
 	Camera camera;
 	Easing easing;
+	BossType1 bossT1;
 
 	InitTitleScene(&ts);
 	AudioInitialize();
@@ -77,19 +79,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 		case Title:
 
-			currentScene = UpdateTitleScene(&ts);
+			currentScene = UpdateTitleScene(&ts, &ss);
 
 			break;
 
 		case Select:
 
-			currentScene = UpdateSelectScene(&ss, &map, &player);
+			currentScene = UpdateSelectScene(&ss, &map, &player, &bossT1, &ps);
 
 			break;
 
 		case Play:
 
-			currentScene = UpdatePlayScene(&ps, &player, &gm);
+			currentScene = UpdatePlayScene(&ps, &player, &gm, &bossT1, &ss);
 
 			break;
 
@@ -113,13 +115,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case Select:
 
-			DrawSelectScene();
+			DrawSelectScene(&ss);
 
 			break;
 
 		case Play:
 
-			DrawPlayScene(&map, &player);
+			DrawPlayScene(&ps, &map, &player, &bossT1);
 
 			break;
 
