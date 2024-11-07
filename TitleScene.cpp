@@ -3,14 +3,14 @@
 #include "Easing.h"
 #include "SelectScene.h"
 #include "Rectangle.h"
-
+#include "Player.h"
 
 
 //========================================================
 // タイトルシーンの更新処理
 //========================================================
 
-Scene UpdateTitleScene(TitleScene* ts, SelectScene* ss)
+Scene UpdateTitleScene(TitleScene* ts, SelectScene* ss, Player* player, Map* map)
 {
 
 	Scene nextScene = Title;
@@ -39,7 +39,7 @@ Scene UpdateTitleScene(TitleScene* ts, SelectScene* ss)
 			else
 			{
 				InitSelectScene(ss);
-
+				InitPlayer(player, map);
 				nextScene = Select;
 			}
 		}
