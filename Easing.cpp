@@ -1,18 +1,22 @@
 ﻿#include "Structures.h"
 
-float EaseInCirc(const float& timer) {
+//イージングの関数
+float EaseIn(const float& timer) 
+{
 
 	return 1.0f - sqrtf(1.0f - timer * timer);
 
 }
 
-float EaseOutCirc(const float& timer) {
+float EaseOut(const float& timer) 
+{
 
 	return sqrtf(1.0f - (timer - 1.0f) * (timer - 1.0f));
 
 }
 
-float EaseInOutCirc(float timer) {
+float EaseInOut(float timer) 
+{
 
 	timer *= 2;
 
@@ -26,7 +30,9 @@ float EaseInOutCirc(float timer) {
 
 }
 
-void CountEaseTimer(Easing& easing) {
+// EaseInOutのイージングタイマー
+void CountEaseInOutTimer(Easing& easing) 
+{
 
 	if (easing.timer > 1.0f) {
 
@@ -38,32 +44,14 @@ void CountEaseTimer(Easing& easing) {
 	else {
 
 		easing.timer += easing.interval;
-		easing.easeTimer = EaseInOutCirc(easing.timer);
+		easing.easeTimer = EaseInOut(easing.timer);
 
 	}
 
 }
 
-void CountEaseTimer(const unsigned int end, unsigned int& current, Easing& easing) {
-
-	if (easing.timer > 1.0f) {
-
-		current = end;
-		easing.easeTimer = 0.0f;
-		easing.timer = 0.0f;
-		easing.isEase = false;
-
-	}
-	else {
-
-		easing.timer += easing.interval;
-		easing.easeTimer = EaseInOutCirc(easing.timer);
-
-	}
-
-}
-
-void CountEaseTimer(const int end, int& current, Easing& easing) {
+void CountEaseInOutTimer(const unsigned int end, unsigned int& current, Easing& easing) 
+{
 
 	if (easing.timer > 1.0f) {
 
@@ -76,13 +64,14 @@ void CountEaseTimer(const int end, int& current, Easing& easing) {
 	else {
 
 		easing.timer += easing.interval;
-		easing.easeTimer = EaseInOutCirc(easing.timer);
+		easing.easeTimer = EaseInOut(easing.timer);
 
 	}
 
 }
 
-void CountEaseTimer(const float end, float& current, Easing& easing) {
+void CountEaseInOutTimer(const int end, int& current, Easing& easing)
+{
 
 	if (easing.timer > 1.0f) {
 
@@ -95,13 +84,14 @@ void CountEaseTimer(const float end, float& current, Easing& easing) {
 	else {
 
 		easing.timer += easing.interval;
-		easing.easeTimer = EaseInOutCirc(easing.timer);
+		easing.easeTimer = EaseInOut(easing.timer);
 
 	}
 
 }
 
-void CountEaseTimer(const Vector2 end, Vector2& current, Easing& easing) {
+void CountEaseInOutTimer(const float end, float& current, Easing& easing) 
+{
 
 	if (easing.timer > 1.0f) {
 
@@ -114,13 +104,76 @@ void CountEaseTimer(const Vector2 end, Vector2& current, Easing& easing) {
 	else {
 
 		easing.timer += easing.interval;
-		easing.easeTimer = EaseInOutCirc(easing.timer);
+		easing.easeTimer = EaseInOut(easing.timer);
 
 	}
 
 }
 
-void LinearInterpolation(const unsigned int start, const unsigned int end, unsigned int& current, const Easing& easing) {
+void CountEaseInOutTimer(const Vector2 end, Vector2& current, Easing& easing)
+{
+
+	if (easing.timer > 1.0f) {
+
+		current = end;
+		easing.easeTimer = 0.0f;
+		easing.timer = 0.0f;
+		easing.isEase = false;
+
+	}
+	else {
+
+		easing.timer += easing.interval;
+		easing.easeTimer = EaseInOut(easing.timer);
+
+	}
+}
+
+//EaseOutのイージングタイマー
+void CountEaseOutTimer(Easing& easing)
+{
+
+	if (easing.timer > 1.0f) {
+
+		easing.easeTimer = 0.0f;
+		easing.timer = 0.0f;
+		easing.isEase = false;
+
+	}
+	else {
+
+		easing.timer += easing.interval;
+		easing.easeTimer = EaseOut(easing.timer);
+
+	}
+
+}
+
+//bossT1の動きのイージングタイマー
+void CountEaseTimerMoveBossT1(Easing& easing) 
+{
+
+	if (easing.timer > 1.0f) {
+
+		easing.easeTimer = 0.0f;
+		easing.timer = 0.0f;
+		easing.isEase = false;
+
+	}
+	else {
+
+		easing.timer += easing.interval;
+		easing.easeTimer = easing.timer;
+
+	}
+
+}
+
+//線形補間関数(LinearInterpolation)
+
+// 色遷移のイージング関数
+void ColorLinearInterpolation(const unsigned int start, const unsigned int end, unsigned int& current, const Easing& easing)
+{
 
 	//赤
 	unsigned int startR = (start >> 24) & 0xff;
@@ -149,26 +202,30 @@ void LinearInterpolation(const unsigned int start, const unsigned int end, unsig
 
 }
 
-void LinearInterpolation(const int start, const int end, int& current, const Easing& easing) {
+void LinearInterpolation(const int start, const int end, int& current, const Easing& easing) 
+{
 
 	current = static_cast<int>((1.0f - easing.easeTimer) * static_cast<float>(start) + easing.easeTimer * static_cast<float>(end));
 
 }
 
-void LinearInterpolation(const float start, const float end, float& current, const Easing& easing) {
+void LinearInterpolation(const float start, const float end, float& current, const Easing& easing)
+{
 
 	current = (1.0f - easing.easeTimer) * start + easing.easeTimer * end;
 
 }
 
-void LinearInterpolation(const Vector2& start, const Vector2& end, Vector2& current, const Easing& easing) {
+void LinearInterpolation(const Vector2& start, const Vector2& end, Vector2& current, const Easing& easing)
+{
 
 	LinearInterpolation(start.x, end.x, current.x, easing);
 	LinearInterpolation(start.y, end.y, current.y, easing);
 
 }
 
-void InitializeEasing(Easing& easing) {
+void InitializeEasing(Easing& easing)
+{
 
 	easing.interval = 0.01f;
 	easing.cycle = 0.0f;
@@ -178,7 +235,8 @@ void InitializeEasing(Easing& easing) {
 
 }
 
-void ScreenPrintfEasing(const int x, const int y, const Easing& easing) {
+void ScreenPrintfEasing(const int x, const int y, const Easing& easing)
+{
 
 	Novice::ScreenPrintf(x, y, "interval : %f", easing.interval);
 	Novice::ScreenPrintf(x, y + 20, "timer : %f", easing.timer);

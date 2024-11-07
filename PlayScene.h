@@ -4,10 +4,10 @@
 #include "Structures.h"
 
 // プレイシーンの更新処理
-Scene UpdatePlayScene(PlayScene* ps, Player* player, GameManager* gm);
+Scene UpdatePlayScene(PlayScene* ps, Player* player, GameManager* gm, BossType1* bossT1, SelectScene* ss);
 
 // プレイシーンの描画処理
-void DrawPlayScene(Map* map, Player* player);
+void DrawPlayScene(PlayScene* ps, Map* map, Player* player, BossType1* bossT1);
 
 // プレイシーンの初期化処理
-void InitPlayScene();
+void InitPlayScene(PlayScene* ps);

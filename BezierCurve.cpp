@@ -1,5 +1,5 @@
 ﻿#include "Structures.h"
-#include "Calc.h"
+#include "Calculate.h"
 #include "Easing.h"
 
 float CalcBezierCurve(int count, int amount, float timer, unsigned int* pointer) {
@@ -50,6 +50,6 @@ void CountCurveTimer(const int amount, Easing* easing) {
     }
     else {
         easing->timer += easing->cycle;
-        easing->easeTimer = EaseInOutCirc(&easing->timer);
+        easing->easeTimer = EaseInOut(easing->timer);
     }
 }

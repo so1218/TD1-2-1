@@ -9,10 +9,14 @@
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
 
-const int kPlayerParticleAmount = 16;
+const int kParticleAmount = 1000;
+const int kBT1aroundParticleAmount = 100;
 const int kBackParticleAmount = 32;
 const int kParticleCountAroundPlayer = 32;
+
+//透明色
 const unsigned int transparent = 0x00000000;
+//有色(黒)
 const unsigned int opaque = 0x000000FF;
 
 //シーン
@@ -56,25 +60,26 @@ struct Easing
 	float timer = 0.0f;
 	float easeTimer = 0.0f;
 	bool isEase = false;
+
 };
 
 // (T = Top, B = Bottom, L = Left, R = Right)
 struct Vertex
 {
-	Vector2 TL;
-	Vector2 TR;
-	Vector2 BL;
-	Vector2 BR;
+	Vector2 leftTop;
+	Vector2 lehtBottom;
+	Vector2 rightTop;
+	Vector2 rightBottom;
 };
 
 
 // (T = Top, B = Bottom, L = Left, R = Right)
 struct VertexOnMap
 {
-	IntVector2 TL;
-	IntVector2 TR;
-	IntVector2 BL;
-	IntVector2 BR;
+	IntVector2 leftTop;
+	IntVector2 leftBottom;
+	IntVector2 rightTop;
+	IntVector2 rightBottom;
 };
 
 // 四角形の構造体
@@ -91,17 +96,17 @@ struct RectangleObject
 	// 4つの頂点の座標
 	Vertex vertex;
 
-	// スクリーン用の４つ角 (s = screen)
-	Vertex sVertex;
+	// スクリーン用の４つ角 
+	Vertex screenVertex;
 
-	// 座標が移動する直前の4つ角の保管。当たり判定で使う。 (p = pre)
-	Vertex pVertex;
+	// 座標が移動する直前の4つ角の保管。当たり判定で使う。
+	Vertex preVertex;
 
-	// 頂点バッファー (b = buffer)
-	Vertex bVertex;
+	// 頂点バッファー
+	Vertex bufferVertex;
 
 	// マップ単位の頂点座標
-	VertexOnMap mVertex;
+	VertexOnMap mapVertex;
 	float width = 0.0f;
 	float height = 0.0f;
 	Vector2 radius = { 0.0f, 0.0f };
@@ -111,17 +116,19 @@ struct RectangleObject
 //ゲームオブジェクトに関する構造体
 struct GameObject :RectangleObject
 {
-	Vector2 pos;
 	Vector2 eDir = { 1.0f, 0.0f };      //位置の単位ベクトル
 	Vector2 scale = { 1.0f, 1.0f };
 	bool isExist = true;
 	unsigned int color = WHITE;
 	float theta = 0.0f;                 //角度
+	float angle;
 	float speed = 0.0f;
 	int GH = 0;                         //GraphicHandle。0で「White1x1」
 	IntVector2 currentChipNo;          //現在いるチップのナンバー格納用。{y,x}。
 	IntVector2 nextChipNo;				//次回いるチップのナンバー格納用。{y,x}。
+	IntVector2 startChipNo;
 	bool sidesCollision[3][3] = {};	    //周囲の８マスのマップチップとぶつかっているかどうか。
+	bool isNextScene = false;
 
 	Vector2 initialPos;
 };
@@ -267,35 +274,29 @@ struct Map
 //パーティクルの構造体
 struct Particle :GameObject, PhysicalElements
 {    
-	Vector2 speed;     
-	float lifetime;    
-	float gravity;     
-	bool isActive;     
-	
-	float radius;
+	float lifetime;
 	int direction;
-	int emitterRange;
-	
-	int frameCount;
-};
+	int radius = 10;
+	IntVector2 emitterRange = { 80,80 };
+	IntVector2 activeDistance = { 60,60 };
+	Vector2 speed = {};
+	float gravity = 0.7f;
+	int frameCount = 0;
+	int appearInterval = 20;
+	int blendMode = 1;
 
-//プレイヤーの周りにあるパーティクル
-struct ParticlAroundPlayer :Particle
-{
-	int color;         
-	float size;        
-	float fadeSpeed;   
+	Easing easingInOut;
+	Easing easingOut;
 
+	int amount;
 };
 
 //プレイヤーの構造体
 struct Player :GameObject, PhysicalElements
 {
-	Particle particle[kPlayerParticleAmount];
 	Easing easing;
 	Vector2 scaleOnPtr[3];	
-
-	
+	Particle aroundParticle[kBT1aroundParticleAmount];
 
 	//プレイヤーの向き
 	enum Direction
@@ -323,7 +324,31 @@ struct Player :GameObject, PhysicalElements
 
 };
 
+struct Boss :GameObject, PhysicalElements
+{
+	
+};
 
+struct Bullet :GameObject, PhysicalElements
+{
+	
+};
+
+struct BossType1 :Boss
+{
+	Easing MoveEase;
+	Particle aroundParticle[kBT1aroundParticleAmount];
+
+	Bullet bullet;
+
+	float toPlayerDistance;
+};
+
+struct BossType2 :Boss
+{
+	Easing MoveEase;
+	float toPlayerDistance;
+};
 
 //プレイシーンの構造体
 struct PlayScene :GameObject
@@ -331,9 +356,7 @@ struct PlayScene :GameObject
 
 	Easing fadeIn;
 	Easing fadeOut;
-	unsigned int transparent = 0x00000000;
-	unsigned int opaque = 0x000000FF;
-	unsigned int current = 0x00000000;
+	unsigned int fadeColor = 0x000000ff;
 
 	bool isNextScene = false;
 
@@ -368,14 +391,13 @@ struct PlayScene :GameObject
 };
 
 //タイトルシーンの構造体
-struct TitleScene
+struct TitleScene: GameObject
 {
+
 	GameManager* gm;
 	Easing fadeIn;
 	Easing fadeOut;
-	unsigned int transparent = 0x00000000;
-	unsigned int opaque = 0x000000FF;
-	unsigned int current = 0x00000000;
+	unsigned int fadeColor = 0x000000ff;
 
 	Easing colorEase;
 	
@@ -383,8 +405,10 @@ struct TitleScene
 };
 
 //セレクトシーンの構造体
-struct SelectScene
+struct SelectScene: GameObject
 {
 	GameManager* gm;
-
+	Easing fadeIn;
+	Easing fadeOut;
+	unsigned int fadeColor = 0x000000ff;
 };
