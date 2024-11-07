@@ -124,7 +124,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GrovalAudio.cpp" />
     <ClCompile Include="Hit.cpp" />
-    <ClCompile Include="kunai.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Matrix.cpp" />
@@ -174,7 +173,6 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GrovalAudio.h" />
     <ClInclude Include="Hit.h" />
-    <ClInclude Include="kunai.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Particle.h" />
