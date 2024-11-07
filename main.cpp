@@ -24,7 +24,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char preKeys[256] = { 0 };
 
 #if defined(_DEBUG)
-	Scene currentScene = Title;
+	Scene currentScene = Play;
 #else
 	Scene currentScene = Select;
 #endif
@@ -44,6 +44,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Easing easing;
 	BossType1 bossT1;
 
+	MapSetting(&map);
+	InitPlayer(&player, &map);
 	InitTitleScene(&ts);
 	AudioInitialize();
 

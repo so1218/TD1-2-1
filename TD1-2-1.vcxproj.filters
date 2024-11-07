@@ -92,7 +92,11 @@
     <ClCompile Include="Vector.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+
+    <ClCompile Include="kunai.cpp">
+
     <ClCompile Include="BossAction.cpp">
+
       <Filter>KamataEngine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -187,6 +191,10 @@
     <ClInclude Include="Structures.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Vector.h" />
+
+    <ClInclude Include="kunai.h" />
+
     <ClInclude Include="BossAction.h" />
+
   </ItemGroup>
 </Project>
