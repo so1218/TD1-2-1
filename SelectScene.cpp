@@ -29,6 +29,8 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 			if (ss->tutorialPos.y >= player->pos.y && ss->tutorialPos.y + ss->tutorialHeight <= player->pos.y + player->radius.y)
 			{
 				nextScene = Play;
+				ss->fadeOut.isEase = true;
+				ss->isNextScene = true;
 			}
 		}
 
@@ -38,6 +40,8 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 			if (ss->stageOnePos.y >= player->pos.y && ss->stageOnePos.y + ss->stageOneHeight <= player->pos.y + player->radius.y)
 			{
 				nextScene = Play;
+				ss->fadeOut.isEase = true;
+				ss->isNextScene = true;
 			}
 		}
 
@@ -47,6 +51,8 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 			if (ss->stageTwoPos.y >= player->pos.y && ss->stageTwoPos.y + ss->stageTwoHeight <= player->pos.y + player->radius.y)
 			{
 				nextScene = Play;
+				ss->fadeOut.isEase = true;
+				ss->isNextScene = true;
 			}
 		}
 
@@ -56,6 +62,8 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 			if (ss->stageThreePos.y >= player->pos.y && ss->stageThreePos.y + ss->stageThreeHeight <= player->pos.y + player->radius.y)
 			{
 				nextScene = Play;
+				ss->fadeOut.isEase = true;
+				ss->isNextScene = true;
 			}
 		}
 
