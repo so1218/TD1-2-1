@@ -79,13 +79,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{
 		case Title:
 
-			currentScene = UpdateTitleScene(&ts, &ss);
+			currentScene = UpdateTitleScene(&ts, &ss, &player,&map);
 
 			break;
 
 		case Select:
 
-			currentScene = UpdateSelectScene(&ss, &map, &player, &bossT1, &ps);
+			currentScene = UpdateSelectScene(&ss, &map, &player, &bossT1, &ps, &gm);
 
 			break;
 
@@ -115,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case Select:
 
-			DrawSelectScene(&ss);
+			DrawSelectScene(&ss, &player);
 
 			break;
 
