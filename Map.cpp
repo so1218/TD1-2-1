@@ -178,7 +178,7 @@ void DrawMap(Map* map)
 				static_cast<int>(kWindowHeight - (map->chip[i][j].pos.y + map->chip[i][j].height / 2)),
 				static_cast<int>(map->chip[i][j].pos.x + map->chip[i][j].width / 2),
 				static_cast<int>(kWindowHeight - (map->chip[i][j].pos.y + map->chip[i][j].height / 2)),
-				0, 0, 0, 0, 0, map->chip[i][j].color);
+				0, 0, 0, 0, 0, 0xFFFFFF00);
 			
 		}
 	}
@@ -187,14 +187,14 @@ void DrawMap(Map* map)
 	for (int i = 0; i < map->kFloorHeight; ++i) 
 	{
 		
-		Novice::DrawLine(0, static_cast<int>(i * map->chip[0][0].height), kWindowWidth, static_cast<int>(i * map->chip[0][0].height), WHITE);
+		Novice::DrawLine(0, static_cast<int>(i * map->chip[0][0].height), kWindowWidth, static_cast<int>(i * map->chip[0][0].height), 0xFFFFFF00);
 		
 	}
 
 	for (int i = 0; i < map->kFloorWidth; ++i) 
 	{
 		
-		Novice::DrawLine(static_cast<int>(i * map->chip[0][0].width), 0, static_cast<int>(i * map->chip[0][0].width), kWindowHeight, WHITE);
+		Novice::DrawLine(static_cast<int>(i * map->chip[0][0].width), 0, static_cast<int>(i * map->chip[0][0].width), kWindowHeight, 0xFFFFFF00);
 		
 	}
 }
