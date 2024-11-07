@@ -44,7 +44,7 @@
     <ClCompile Include="Boss.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
-    <ClCompile Include="Calc.cpp">
+    <ClCompile Include="Calculate.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
@@ -92,7 +92,11 @@
     <ClCompile Include="Vector.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+
     <ClCompile Include="kunai.cpp">
+
+    <ClCompile Include="BossAction.cpp">
+
       <Filter>KamataEngine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -170,7 +174,7 @@
     </ClInclude>
     <ClInclude Include="BezierCurve.h" />
     <ClInclude Include="Boss.h" />
-    <ClInclude Include="Calc.h" />
+    <ClInclude Include="Calculate.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="GameObject.h" />
@@ -187,6 +191,10 @@
     <ClInclude Include="Structures.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Vector.h" />
+
     <ClInclude Include="kunai.h" />
+
+    <ClInclude Include="BossAction.h" />
+
   </ItemGroup>
 </Project>

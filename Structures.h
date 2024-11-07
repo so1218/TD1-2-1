@@ -9,10 +9,14 @@
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
 
-const int kPlayerParticleAmount = 16;
+const int kParticleAmount = 1000;
+const int kBT1aroundParticleAmount = 100;
 const int kBackParticleAmount = 32;
 const int kParticleCountAroundPlayer = 32;
+
+//透明色
 const unsigned int transparent = 0x00000000;
+//有色(黒)
 const unsigned int opaque = 0x000000FF;
 
 // シーン
@@ -43,6 +47,7 @@ struct PhysicalElements {
     Vector2 acceleration = {};
 };
 
+
 // イージングの構造体
 struct Easing {
     float interval = 0.01f;
@@ -58,14 +63,43 @@ struct Vertex {
     Vector2 TR;
     Vector2 BL;
     Vector2 BR;
+
+//イージングの構造体
+struct Easing
+{
+	float interval = 0.01f;
+	float cycle = 0.0f;
+	float timer = 0.0f;
+	float easeTimer = 0.0f;
+	bool isEase = false;
+
 };
 
 // (T = Top, B = Bottom, L = Left, R = Right)
+struct Vertex
+{
+	Vector2 leftTop;
+	Vector2 lehtBottom;
+	Vector2 rightTop;
+	Vector2 rightBottom;
+
+};
+
+// (T = Top, B = Bottom, L = Left, R = Right)
+
 struct VertexOnMap {
     IntVector2 TL;
     IntVector2 TR;
     IntVector2 BL;
     IntVector2 BR;
+
+struct VertexOnMap
+{
+	IntVector2 leftTop;
+	IntVector2 leftBottom;
+	IntVector2 rightTop;
+	IntVector2 rightBottom;
+
 };
 
 // 四角形の構造体
@@ -77,6 +111,7 @@ struct RectangleObject {
 
     // 移動後の座標
     Vector2 nextPos;
+
 
     // 4つの頂点の座標
     Vertex vertex;
@@ -90,12 +125,29 @@ struct RectangleObject {
     // 頂点バッファー (b = buffer)
     Vertex bVertex;
 
+	// スクリーン用の４つ角 
+	Vertex screenVertex;
+
+	// 座標が移動する直前の4つ角の保管。当たり判定で使う。
+	Vertex preVertex;
+
+	// 頂点バッファー
+	Vertex bufferVertex;
+
+	// マップ単位の頂点座標
+	VertexOnMap mapVertex;
+	float width = 0.0f;
+	float height = 0.0f;
+	Vector2 radius = { 0.0f, 0.0f };
+
+
     // マップ単位の頂点座標
     VertexOnMap mVertex;
     float width = 0.0f;
     float height = 0.0f;
     Vector2 radius = { 0.0f, 0.0f };
 };
+
 
 // ゲームオブジェクトに関する構造体
 struct GameObject : RectangleObject {
@@ -112,6 +164,26 @@ struct GameObject : RectangleObject {
     bool sidesCollision[3][3] = {}; // 周囲の８マスのマップチップとぶつかっているかどうか。
 
     Vector2 initialPos;
+
+//ゲームオブジェクトに関する構造体
+struct GameObject :RectangleObject
+{
+	Vector2 eDir = { 1.0f, 0.0f };      //位置の単位ベクトル
+	Vector2 scale = { 1.0f, 1.0f };
+	bool isExist = true;
+	unsigned int color = WHITE;
+	float theta = 0.0f;                 //角度
+	float angle;
+	float speed = 0.0f;
+	int GH = 0;                         //GraphicHandle。0で「White1x1」
+	IntVector2 currentChipNo;          //現在いるチップのナンバー格納用。{y,x}。
+	IntVector2 nextChipNo;				//次回いるチップのナンバー格納用。{y,x}。
+	IntVector2 startChipNo;
+	bool sidesCollision[3][3] = {};	    //周囲の８マスのマップチップとぶつかっているかどうか。
+	bool isNextScene = false;
+
+	Vector2 initialPos;
+
 };
 
 // マップチップに関する構造体
@@ -247,6 +319,7 @@ struct Particle : GameObject, PhysicalElements {
     int frameCount;
 };
 
+
 // プレイヤーの周りにあるパーティクル
 struct ParticlAroundPlayer : Particle {
     int color;
@@ -305,9 +378,95 @@ struct PlayScene : GameObject {
     unsigned int opaque = 0x000000FF;
     unsigned int current = 0x00000000;
 
+//パーティクルの構造体
+struct Particle :GameObject, PhysicalElements
+{    
+	float lifetime;
+	int direction;
+	int radius = 10;
+	IntVector2 emitterRange = { 80,80 };
+	IntVector2 activeDistance = { 60,60 };
+	Vector2 speed = {};
+	float gravity = 0.7f;
+	int frameCount = 0;
+	int appearInterval = 20;
+	int blendMode = 1;
+
+	Easing easingInOut;
+	Easing easingOut;
+
+	int amount;
+};
+
+//プレイヤーの構造体
+struct Player :GameObject, PhysicalElements
+{
+	Easing easing;
+	Vector2 scaleOnPtr[3];	
+	Particle aroundParticle[kBT1aroundParticleAmount];
+
+	//プレイヤーの向き
+	enum Direction
+	{
+		up = 0,
+		left = 1,
+		down = 2,
+		right = 3
+	};
+
+	//プレイヤーのパーティクル、挙動
+	int direction = 0;
+	bool isTrigger = false;
+	int nextDirection = 0;
+	int newDirection = 0;
+	int intervalTimer = 60;
+	int reflectTimer = 0;
+	int rotateTimer = 0;
+	int rotateInterval = 1;
+	int stopTimer = 0;
+	bool isStartDash = false;
+	bool isReflect = false;
+	bool isRotated = false;
+	bool isStop = false;
+
+};
+
+struct Boss :GameObject, PhysicalElements
+{
+	
+};
+
+struct Bullet :GameObject, PhysicalElements
+{
+	
+};
+
+struct BossType1 :Boss
+{
+	Easing MoveEase;
+	Particle aroundParticle[kBT1aroundParticleAmount];
+
+	Bullet bullet;
+
+	float toPlayerDistance;
+};
+
+struct BossType2 :Boss
+{
+	Easing MoveEase;
+	float toPlayerDistance;
+};
+
+
     bool isNextScene = false;
 
+
     Easing playerAppear;
+
+	Easing fadeIn;
+	Easing fadeOut;
+	unsigned int fadeColor = 0x000000ff;
+
 
     // クリア画面
     RectangleObject clearScreen;
@@ -348,10 +507,50 @@ struct TitleScene {
 
     Easing colorEase;
 
+
     GameObject titleLogo;
 };
 
 // セレクトシーンの構造体
 struct SelectScene {
     GameManager* gm;
+
+//タイトルシーンの構造体
+struct TitleScene: GameObject
+{
+
+	GameManager* gm;
+	Easing fadeIn;
+	Easing fadeOut;
+	unsigned int fadeColor = 0x000000ff;
+
+	Easing colorEase;
+	
+	GameObject titleLogo;
+};
+
+//セレクトシーンの構造体
+struct SelectScene: GameObject
+{
+	GameManager* gm;
+
+	Easing fadeIn;
+	Easing fadeOut;
+	unsigned int fadeColor = 0x000000ff;
+
+	Vector2 tutorialPos = { 590.0f,520.0f };
+	float tutorialWidth = 100.0f;
+	float tutorialHeight = 100.0f;
+	Vector2 stageOnePos = { 190.0f,320.0f };
+	float stageOneWidth = 100.0f;
+	float stageOneHeight = 100.0f;
+	Vector2 stageTwoPos = { 590.0f,120.0f };
+	float stageTwoWidth = 100.0f;
+	float stageTwoHeight = 100.0f;
+	Vector2 stageThreePos = { 990.0f,320.0f };
+	float stageThreeWidth = 100.0f;
+	float stageThreeHeight = 100.0f;
+
+
+
 };

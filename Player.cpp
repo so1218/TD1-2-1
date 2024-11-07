@@ -1,4 +1,6 @@
 ﻿#include "Structures.h"
+#include "Rectangle.h"
+#include "Particle.h"
 
 //========================================================
 // プレイヤーの挙動
@@ -53,6 +55,12 @@ void MovePlayer(Player* player, GameManager* gm)
 		player->pos.y -= player->velocity.y;
 	}
 
+	
+
+	CalcVertexRectangle(player);
+	ConvertWorldToScreenRectangle(player);
+
+	UpdateGoUpAroundParticle(player->aroundParticle, &player->pos);
 }
 
 
@@ -72,15 +80,17 @@ void ScreenPrintfPlayer()
 void DrawPlayer(Player* player)
 {
 	Novice::DrawQuad(
-		static_cast<int>(player->pos.x - player->width / 2),
-		kWindowHeight - static_cast<int>(player->pos.y - player->height / 2),
-		static_cast<int>(player->pos.x + player->width / 2),
-		kWindowHeight - static_cast<int>(player->pos.y - player->height / 2),
-		static_cast<int>(player->pos.x - player->width / 2),
-		kWindowHeight - static_cast<int>(player->pos.y + player->height / 2),
-		static_cast<int>(player->pos.x + player->width / 2),
-		kWindowHeight - static_cast<int>(player->pos.y + player->height / 2),
+		static_cast<int>(player->screenVertex.leftTop.x),
+		static_cast<int>(player->screenVertex.leftTop.y),
+		static_cast<int>(player->screenVertex.rightTop.x),
+		static_cast<int>(player->screenVertex.rightTop.y),
+		static_cast<int>(player->screenVertex.lehtBottom.x),
+		static_cast<int>(player->screenVertex.lehtBottom.y),
+		static_cast<int>(player->screenVertex.rightBottom.x),
+		static_cast<int>(player->screenVertex.rightBottom.y),
 		0, 0, 0, 0, 0, player->color);
+
+	DrawGoUpAroundParticle(player->aroundParticle);
 
 
 #if defined(_DEBUG)
@@ -95,81 +105,86 @@ void DrawPlayer(Player* player)
 void InitPlayer(Player* player, Map* map)
 {
 	//プレイヤーの初期位置初期化
-	static IntVector2 start = { 6, 8 };
+	player->startChipNo = { 6, 8 };
 
-	player->radius = { 25.0f, 25.0f };
+	player->radius = { 16.0f, 16.0f };
 	player->velocity = { 5.0f, 5.0f };
 
-	player->width = 50;
-	player->height = 50;
+	player->width = 32;
+	player->height = 32;
 	player->color = BLUE;
 
+	player->aroundParticle->amount = 16;
+	player->aroundParticle->emitterRange = { 20,60 };
+	
 	//開始位置座標
 
 	//初期位置チップナンバー
 	if (map->stageNo == 0)
 	{
-		start.x = 10;
-		start.y = 8;
+		player->startChipNo.x = 10;
+		player->startChipNo.y = 8;
 	}
 
 	else if (map->stageNo == 1)
 	{
-		start.x = 9;
-		start.y = 8;
+		player->startChipNo.x = 9;
+		player->startChipNo.y = 8;
 	}
 
 	else if (map->stageNo == 2)
 	{
-		start.x = 10;
-		start.y = 6;
+		player->startChipNo.x = 10;
+		player->startChipNo.y = 6;
 	}
 
 	else if (map->stageNo == 3)
 	{
-		start.x = 10;
-		start.y = 8;
+		player->startChipNo.x = 10;
+		player->startChipNo.y = 8;
 	}
 
 	else if (map->stageNo == 4)
 	{
-		start.x = 7;
-		start.y = 9;
+		player->startChipNo.x = 7;
+		player->startChipNo.y = 9;
 	}
 
 	else if (map->stageNo == 5)
 	{
-		start.x = 10;
-		start.y = 6;
+		player->startChipNo.x = 10;
+		player->startChipNo.y = 6;
 	}
 
 	else if (map->stageNo == 6)
 	{
-		start.x = 9;
-		start.y = 8;
+		player->startChipNo.x = 9;
+		player->startChipNo.y = 8;
 	}
 
 	else if (map->stageNo == 7)
 	{
-		start.x = 10;
-		start.y = 5;
+		player->startChipNo.x = 10;
+		player->startChipNo.y = 5;
 	}
 
 	else if (map->stageNo == 8)
 	{
-		start.x = 9;
-		start.y = 9;
+		player->startChipNo.x = 9;
+		player->startChipNo.y = 9;
 	}
 
 	else if (map->stageNo == 9)
 	{
-		start.x = 13;
-		start.y = 4;
+		player->startChipNo.x = 13;
+		player->startChipNo.y = 4;
 	}
 
-	player->pos = map->chip[start.y][start.x].pos;
+	player->pos = map->chip[player->startChipNo.y][player->startChipNo.x].pos;
 
-	player->currentChipNo = start;
+	player->currentChipNo = player->startChipNo;
 	player->prePos = player->pos;
 
+	CalcVertexRectangle(player);
+	ConvertWorldToScreenRectangle(player);
 }

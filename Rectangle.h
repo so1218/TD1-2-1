@@ -5,7 +5,7 @@
 
 void CalcVertexRectangle(RectangleObject* rectangle);
 
-void ConvertCoordinateWorldToScreenRectangle(RectangleObject* rectangle);
+void ConvertWorldToScreenRectangle(RectangleObject* rectangle);
 
 void ConvertUnitPixelToMapRectangle(RectangleObject* rectangle);
 

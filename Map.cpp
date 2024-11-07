@@ -7,7 +7,7 @@
 void MapSetting(Map* map)
 {
 	//マップチップの配置
-	int static chipData[map->stageSum][map->kFloorHeight][map->kFloorWidth]
+	int static chipData[map->stageSum][map->kFloorHeight][map->kFloorWidth] 
 	{
 		//ステージ0
 		{
@@ -178,7 +178,11 @@ void DrawMap(Map* map)
 				static_cast<int>(kWindowHeight - (map->chip[i][j].pos.y + map->chip[i][j].height / 2)),
 				static_cast<int>(map->chip[i][j].pos.x + map->chip[i][j].width / 2),
 				static_cast<int>(kWindowHeight - (map->chip[i][j].pos.y + map->chip[i][j].height / 2)),
+
 				0, 0, 0, 0, 0, 0xFFFFFF00);
+
+				0, 0, 0, 0, 0, 0xffffff00);
+
 			
 		}
 	}
@@ -187,14 +191,22 @@ void DrawMap(Map* map)
 	for (int i = 0; i < map->kFloorHeight; ++i) 
 	{
 		
+
 		Novice::DrawLine(0, static_cast<int>(i * map->chip[0][0].height), kWindowWidth, static_cast<int>(i * map->chip[0][0].height), 0xFFFFFF00);
+
+		Novice::DrawLine(0, static_cast<int>(i * map->chip[0][0].height), kWindowWidth, static_cast<int>(i * map->chip[0][0].height), 0xffffff00);
+
 		
 	}
 
 	for (int i = 0; i < map->kFloorWidth; ++i) 
 	{
 		
+
 		Novice::DrawLine(static_cast<int>(i * map->chip[0][0].width), 0, static_cast<int>(i * map->chip[0][0].width), kWindowHeight, 0xFFFFFF00);
+
+		Novice::DrawLine(static_cast<int>(i * map->chip[0][0].width), 0, static_cast<int>(i * map->chip[0][0].width), kWindowHeight, 0xffffff00);
+
 		
 	}
 }

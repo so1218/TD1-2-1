@@ -2,27 +2,49 @@
 #include "TitleScene.h"
 #include "Easing.h"
 #include "SelectScene.h"
+#include "Rectangle.h"
+
 
 
 //========================================================
 // タイトルシーンの更新処理
 //========================================================
 
-Scene UpdateTitleScene(TitleScene* ts)
+Scene UpdateTitleScene(TitleScene* ts, SelectScene* ss)
 {
 
 	Scene nextScene = Title;
 
-
-
-	if (ts->gm->keys[DIK_SPACE] && !ts->gm->preKeys[DIK_SPACE])
+	if (ts->fadeIn.isEase)
 	{
-		InitSelectScene();
-	
-		nextScene = Select;
+		ColorLinearInterpolation(ts->fadeColor, transparent, ts->fadeColor, ts->fadeIn);
+		CountEaseInOutTimer(ts->fadeIn);
 	}
+	else
+	{
 
-	
+		//次のシーンへのトリガー
+		if (ts->gm->keys[DIK_SPACE] && !ts->gm->preKeys[DIK_SPACE])
+		{
+			ts->fadeOut.isEase = true;
+			ts->isNextScene = true;
+		}
+		if (ts->isNextScene)
+		{
+			if (ts->fadeOut.isEase)
+			{
+				ColorLinearInterpolation(ts->fadeColor, opaque, ts->fadeColor, ts->fadeOut);
+				CountEaseInOutTimer(ts->fadeOut);
+			}
+			else
+			{
+				InitSelectScene(ss);
+
+				nextScene = Select;
+			}
+		}
+		
+	}
 
 	return nextScene;
 
@@ -42,17 +64,17 @@ void ScreenPrintfTitleScene()
 void DrawTitleScene(TitleScene* ts)
 {
 
-	Novice::DrawBox(0, 0, 1280, 720, 0.0f, ts->current, kFillModeSolid);
+	Novice::DrawBox(0, 0, 1280, 720, 0.0f, ts->fadeColor, kFillModeSolid);
 
 	Novice::DrawQuad(
-		static_cast<int>(ts->titleLogo.sVertex.TL.x),
-		static_cast<int>(kWindowHeight - ts->titleLogo.sVertex.TL.y),
-		static_cast<int>(ts->titleLogo.sVertex.TR.x),
-		static_cast<int>(kWindowHeight - ts->titleLogo.sVertex.TR.y),
-		static_cast<int>(ts->titleLogo.sVertex.BL.x),
-		static_cast<int>(kWindowHeight - ts->titleLogo.sVertex.BL.y),
-		static_cast<int>(ts->titleLogo.sVertex.BR.x),
-		static_cast<int>(kWindowHeight - ts->titleLogo.sVertex.BR.y),
+		static_cast<int>(ts->titleLogo.screenVertex.leftTop.x),
+		static_cast<int>(ts->titleLogo.screenVertex.leftTop.y),
+		static_cast<int>(ts->titleLogo.screenVertex.rightTop.x),
+		static_cast<int>(ts->titleLogo.screenVertex.rightTop.y),
+		static_cast<int>(ts->titleLogo.screenVertex.lehtBottom.x),
+		static_cast<int>(ts->titleLogo.screenVertex.lehtBottom.y),
+		static_cast<int>(ts->titleLogo.screenVertex.rightBottom.x),
+		static_cast<int>(ts->titleLogo.screenVertex.rightBottom.y),
 		0, 0, 0, 0, 0, WHITE);
 
 
@@ -67,21 +89,17 @@ void DrawTitleScene(TitleScene* ts)
 
 void InitTitleScene(TitleScene* ts) 
 {
+	ts->fadeIn.isEase = true;
+	ts->isNextScene = false;
+
 	ts->titleLogo.pos.x = 450;
 	ts->titleLogo.pos.y = 500;
 
 	ts->titleLogo.width = 400;
 	ts->titleLogo.height = 70;
 
-	ts->titleLogo.vertex.TL = { -ts->titleLogo.width / 2.0f, ts->titleLogo.height / 2.0f };
-	ts->titleLogo.vertex.TR = { ts->titleLogo.width / 2.0f, ts->titleLogo.height / 2.0f };
-	ts->titleLogo.vertex.BL = { -ts->titleLogo.width / 2.0f, -ts->titleLogo.height / 2.0f };
-	ts->titleLogo.vertex.BR = { ts->titleLogo.width / 2.0f, -ts->titleLogo.height / 2.0f };
-	
-	ts->titleLogo.sVertex.TL = { ts->titleLogo.vertex.TL.x + ts->titleLogo.pos.x,ts->titleLogo.vertex.TL.y + ts->titleLogo.pos.y };
-	ts->titleLogo.sVertex.TR = { ts->titleLogo.vertex.TR.x + ts->titleLogo.pos.x,ts->titleLogo.vertex.TR.y + ts->titleLogo.pos.y };
-	ts->titleLogo.sVertex.BL = { ts->titleLogo.vertex.BL.x + ts->titleLogo.pos.x,ts->titleLogo.vertex.BL.y + ts->titleLogo.pos.y };
-	ts->titleLogo.sVertex.BR = { ts->titleLogo.vertex.BR.x + ts->titleLogo.pos.x,ts->titleLogo.vertex.BR.y + ts->titleLogo.pos.y };
+	CalcVertexRectangle(&ts->titleLogo);
+	ConvertWorldToScreenRectangle(&ts->titleLogo);
 }
 
 
