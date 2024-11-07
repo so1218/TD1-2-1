@@ -402,6 +402,8 @@ struct TitleScene: GameObject
 	Easing colorEase;
 	
 	GameObject titleLogo;
+	float amplitude;
+	float theta;
 };
 
 //セレクトシーンの構造体
@@ -413,18 +415,10 @@ struct SelectScene: GameObject
 	Easing fadeOut;
 	unsigned int fadeColor = 0x000000ff;
 
-	Vector2 tutorialPos = { 590.0f,520.0f };
-	float tutorialWidth = 100.0f;
-	float tutorialHeight = 100.0f;
-	Vector2 stageOnePos = { 190.0f,320.0f };
-	float stageOneWidth = 100.0f;
-	float stageOneHeight = 100.0f;
-	Vector2 stageTwoPos = { 590.0f,120.0f };
-	float stageTwoWidth = 100.0f;
-	float stageTwoHeight = 100.0f;
-	Vector2 stageThreePos = { 990.0f,320.0f };
-	float stageThreeWidth = 100.0f;
-	float stageThreeHeight = 100.0f;
-
-
+	GameObject tutorialDoor;
+	GameObject stageOneDoor;
+	GameObject stageTwoDoor;
+	GameObject stageThreeDoor;
+	int isSceneChange = false;
+	
 };
