@@ -16,53 +16,58 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 	Scene nextScene = Select;
 
 	if (ss->fadeIn.isEase)
-
-	SelectScene selectscene;
-	
-	// チュートリアルステージに入る処理
-	if (selectscene.tutorialPos.x <= player->pos.x && selectscene.tutorialPos.x + selectscene.tutorialWidth >= player->pos.x + player->radius.x)
-	{
-		if (selectscene.tutorialPos.y >= player->pos.y && selectscene.tutorialPos.y + selectscene.tutorialHeight <= player->pos.y + player->radius.y)
-		{
-			nextScene = Play;
-		}
-	}
-
-	// ステージ1に入る処理
-	if (selectscene.stageOnePos.x <= player->pos.x && selectscene.stageOnePos.x + selectscene.stageOneWidth >= player->pos.x + player->radius.x)
-	{
-		if (selectscene.stageOnePos.y >= player->pos.y && selectscene.stageOnePos.y + selectscene.stageOneHeight <= player->pos.y + player->radius.y)
-		{
-			nextScene = Play;
-		}
-	}
-
-	// ステージ2に入る処理
-	if (selectscene.stageTwoPos.x <= player->pos.x && selectscene.stageTwoPos.x + selectscene.stageTwoWidth >= player->pos.x + player->radius.x)
-	{
-		if (selectscene.stageTwoPos.y >= player->pos.y && selectscene.stageTwoPos.y + selectscene.stageTwoHeight <= player->pos.y + player->radius.y)
-		{
-			nextScene = Play;
-		}
-	}
-
-	// ステージ3に入る処理
-	if (selectscene.stageThreePos.x <= player->pos.x && selectscene.stageThreePos.x + selectscene.stageThreeWidth >= player->pos.x + player->radius.x)
-	{
-		if (selectscene.stageThreePos.y >= player->pos.y && selectscene.stageThreePos.y + selectscene.stageThreeHeight <= player->pos.y + player->radius.y)
-		{
-			nextScene = Play;
-		}
-	}
-
-	if (ss->gm->keys[DIK_SPACE] && !ss->gm->preKeys[DIK_SPACE])
-
 	{
 		ColorLinearInterpolation(ss->fadeColor, transparent, ss->fadeColor, ss->fadeIn);
 		CountEaseInOutTimer(ss->fadeIn);
 	}
+
 	else
 	{
+		// チュートリアルステージに入る処理
+		if (ss->tutorialPos.x <= player->pos.x && ss->tutorialPos.x + ss->tutorialWidth >= player->pos.x + player->radius.x)
+		{
+			if (ss->tutorialPos.y >= player->pos.y && ss->tutorialPos.y + ss->tutorialHeight <= player->pos.y + player->radius.y)
+			{
+				nextScene = Play;
+				ss->fadeOut.isEase = true;
+				ss->isNextScene = true;
+			}
+		}
+
+		// ステージ1に入る処理
+		if (ss->stageOnePos.x <= player->pos.x && ss->stageOnePos.x + ss->stageOneWidth >= player->pos.x + player->radius.x)
+		{
+			if (ss->stageOnePos.y >= player->pos.y && ss->stageOnePos.y + ss->stageOneHeight <= player->pos.y + player->radius.y)
+			{
+				nextScene = Play;
+				ss->fadeOut.isEase = true;
+				ss->isNextScene = true;
+			}
+		}
+
+		// ステージ2に入る処理
+		if (ss->stageTwoPos.x <= player->pos.x && ss->stageTwoPos.x + ss->stageTwoWidth >= player->pos.x + player->radius.x)
+		{
+			if (ss->stageTwoPos.y >= player->pos.y && ss->stageTwoPos.y + ss->stageTwoHeight <= player->pos.y + player->radius.y)
+			{
+				nextScene = Play;
+				ss->fadeOut.isEase = true;
+				ss->isNextScene = true;
+			}
+		}
+
+		// ステージ3に入る処理
+		if (ss->stageThreePos.x <= player->pos.x && ss->stageThreePos.x + ss->stageThreeWidth >= player->pos.x + player->radius.x)
+		{
+			if (ss->stageThreePos.y >= player->pos.y && ss->stageThreePos.y + ss->stageThreeHeight <= player->pos.y + player->radius.y)
+			{
+				nextScene = Play;
+				ss->fadeOut.isEase = true;
+				ss->isNextScene = true;
+			}
+		}
+
+
 
 		//次のシーンへのトリガー
 		if (ss->gm->keys[DIK_SPACE] && !ss->gm->preKeys[DIK_SPACE])
