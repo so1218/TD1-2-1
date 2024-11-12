@@ -9,9 +9,10 @@
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
 
-const int kAmount50 = 50;
-const int kAmount100 = 100;
-const int kAmount200 = 200;
+const int kParticleAmount = 1000;
+const int kBT1aroundParticleAmount = 100;
+const int kBackParticleAmount = 32;
+const int kParticleCountAroundPlayer = 32;
 
 //透明色
 const unsigned int transparent = 0x00000000;
@@ -84,7 +85,6 @@ struct VertexOnMap
 // 四角形の構造体
 struct RectangleObject
 {
-
 	Vector2 pos;
 
 	// 移動前の座標
@@ -113,14 +113,8 @@ struct RectangleObject
 
 };
 
-struct Circle
-{
-	Vector2 center;    
-	Vector2 radius = { 0.0f, 0.0f };
-};
-
 //ゲームオブジェクトに関する構造体
-struct GameObject :RectangleObject, PhysicalElements
+struct GameObject :RectangleObject
 {
 	Vector2 eDir = { 1.0f, 0.0f };      //位置の単位ベクトル
 	Vector2 scale = { 1.0f, 1.0f };
@@ -129,16 +123,12 @@ struct GameObject :RectangleObject, PhysicalElements
 	float theta = 0.0f;                 //角度
 	float angle;
 	float speed = 0.0f;
-	Vector2 directionVec = {};
-	Vector2 normalizedDirection = {};
 	int GH = 0;                         //GraphicHandle。0で「White1x1」
 	IntVector2 currentChipNo;          //現在いるチップのナンバー格納用。{y,x}。
 	IntVector2 nextChipNo;				//次回いるチップのナンバー格納用。{y,x}。
 	IntVector2 startChipNo;
 	bool sidesCollision[3][3] = {};	    //周囲の８マスのマップチップとぶつかっているかどうか。
 	bool isNextScene = false;
-
-	int frameCount = 0;
 
 	Vector2 initialPos;
 };
@@ -156,23 +146,6 @@ struct MapChip :GameObject
 
 	unsigned int color = WHITE;
 
-};
-
-struct BlendModeFunc
-{
-	int mode = 1;
-	int choiceType = 1;
-
-	enum BlendModeType
-	{
-		None = 0,
-		Normal = 1,
-		Add = 2,
-		Subtract = 3,
-		Multiply = 4,
-		Screen = 5,
-		Exclusion = 6
-	};
 };
 
 //カメラ関係の構造体
@@ -223,6 +196,7 @@ struct StageImage :RectangleObject
 //ビットマップフォントの構造体
 struct BitMapFont
 {
+
 	//そのステージの制限時間
 	int timeLimit = 60 * 30;
 
@@ -247,7 +221,9 @@ struct BitMapFont
 //カラーの遷移演出などに関する構造体
 struct ChangingColor 
 {
+
 	unsigned int changingBackColor = BLACK;
+
 };
 
 
@@ -263,6 +239,7 @@ struct Map
 	Vector2 pos;
 
 	float easingTimer = 0.0f;
+
 
 	enum ChipType
 	{
@@ -295,7 +272,7 @@ struct Map
 };
 
 //パーティクルの構造体
-struct Particle :GameObject
+struct Particle :GameObject, PhysicalElements
 {    
 	float lifetime;
 	int direction;
@@ -304,24 +281,22 @@ struct Particle :GameObject
 	IntVector2 activeDistance = { 60,60 };
 	Vector2 speed = {};
 	float gravity = 0.7f;
+	int frameCount = 0;
 	int appearInterval = 20;
-	
-	BlendModeFunc blendMode;
+	int blendMode = 1;
 
 	Easing easingInOut;
 	Easing easingOut;
-	Easing easingIn;
 
 	int amount;
 };
 
 //プレイヤーの構造体
-struct Player :GameObject
+struct Player :GameObject, PhysicalElements
 {
 	Easing easing;
 	Vector2 scaleOnPtr[3];	
-	Particle aroundParticle[kAmount50];
-	Particle toCenterParticle[kAmount50];
+	Particle aroundParticle[kBT1aroundParticleAmount];
 
 	//プレイヤーの向き
 	enum Direction
@@ -332,57 +307,47 @@ struct Player :GameObject
 		right = 3
 	};
 
+	//プレイヤーのパーティクル、挙動
+	int direction = 0;
+	bool isTrigger = false;
+	int nextDirection = 0;
+	int newDirection = 0;
+	int intervalTimer = 60;
+	int reflectTimer = 0;
+	int rotateTimer = 0;
+	int rotateInterval = 1;
+	int stopTimer = 0;
+	bool isStartDash = false;
+	bool isReflect = false;
+	bool isRotated = false;
+	bool isStop = false;
+
 };
 
-
-struct Bullet: GameObject
+struct Boss :GameObject, PhysicalElements
 {
-
-	int amount = 16;
-	int directionCount = 16;
-	float angleStep;
-
-	bool isAction = false;
-	bool hasAction = false;
-
-	int appearInterval = 20;
-
+	
 };
 
-struct BossType1 :GameObject
+struct Bullet :GameObject, PhysicalElements
 {
-	Easing MoveEase;
-	Particle aroundParticle[kAmount50];
-	Particle goUpParticle[kAmount50];
-	Particle impactDustParticle[kAmount50];
-
-	Bullet bulletSomeway[kAmount50];
-	Bullet bulletToPlayer[kAmount50];
-
-	float toPlayerDir;
-
-	Vector2 knockbackDir;
-	Vector2 knockbackNormalizedDir;
-	float knockbackStrength = 10;
-	PhysicalElements knockback;
-	Easing knockbackEase;
-	bool isKnockback = false;
-
-	bool isAction = false;
-	int actionFrameCounter = 0;
-	int randAction = 0;
-
+	
 };
 
-struct BossType2 :GameObject
+struct BossType1 :Boss
 {
 	Easing MoveEase;
+	Particle aroundParticle[kBT1aroundParticleAmount];
+
+	Bullet bullet;
+
 	float toPlayerDistance;
 };
 
-struct Boss
+struct BossType2 :Boss
 {
-	BossType1 T1;
+	Easing MoveEase;
+	float toPlayerDistance;
 };
 
 //プレイシーンの構造体
@@ -423,9 +388,6 @@ struct PlayScene :GameObject
 	bool stageCleared = false;
 
 	bool isNextSelect = false;
-
-	GameObject playerHpIcon[3];
-
 };
 
 //タイトルシーンの構造体

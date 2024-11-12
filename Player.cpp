@@ -2,7 +2,6 @@
 #include "Rectangle.h"
 #include "Particle.h"
 
-
 //========================================================
 // プレイヤーの挙動
 //========================================================
@@ -57,11 +56,11 @@ void MovePlayer(Player* player, GameManager* gm)
 	}
 
 	
+
 	CalcVertexRectangle(player);
 	ConvertWorldToScreenRectangle(player);
-	
-	UpdateToCenterParticle(player->toCenterParticle, &player->pos);
-	UpdateLikeSmokeParticle(player->aroundParticle, &player->pos);
+
+	UpdateGoUpAroundParticle(player->aroundParticle, &player->pos);
 }
 
 
@@ -73,6 +72,8 @@ void MovePlayer(Player* player, GameManager* gm)
 void ScreenPrintfPlayer()
 {
 	Novice::ScreenPrintf(0, 20, "player");
+	
+	
 }
 
 //	プレイヤーの描画
@@ -89,8 +90,8 @@ void DrawPlayer(Player* player)
 		static_cast<int>(player->screenVertex.rightBottom.y),
 		0, 0, 0, 0, 0, player->color);
 
-	DrawLikeSmokeParticle(player->aroundParticle);
-	DrawToCenterParticle(player->toCenterParticle);
+	DrawGoUpAroundParticle(player->aroundParticle);
+
 
 #if defined(_DEBUG)
 	ScreenPrintfPlayer();
@@ -113,17 +114,8 @@ void InitPlayer(Player* player, Map* map)
 	player->height = 32;
 	player->color = BLUE;
 
-	//パーティクルに関する初期化
-	player->aroundParticle->amount = 30;
+	player->aroundParticle->amount = 16;
 	player->aroundParticle->emitterRange = { 20,60 };
-	player->toCenterParticle->amount = 12;
-	InitToCenterParticle(player->toCenterParticle);
-	
-
-	//四角形描画に関する初期化
-	CalcVertexRectangle(player);
-	ConvertWorldToScreenRectangle(player);
-	
 	
 	//開始位置座標
 
@@ -193,4 +185,6 @@ void InitPlayer(Player* player, Map* map)
 	player->currentChipNo = player->startChipNo;
 	player->prePos = player->pos;
 
+	CalcVertexRectangle(player);
+	ConvertWorldToScreenRectangle(player);
 }

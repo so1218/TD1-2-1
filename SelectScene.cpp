@@ -11,7 +11,7 @@
 // セレクトシーンの更新処理
 //========================================================
 
-Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, PlayScene* ps, GameManager* gm)
+Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bossT1, PlayScene* ps, GameManager* gm)
 {
 	Scene nextScene = Select;
 
@@ -278,7 +278,7 @@ void DrawSelectScene(SelectScene* ss, Player* player)
 // セレクトシーンの初期化
 //========================================================
 
-void InitSelectScene(SelectScene* ss, Player* player, Map* map)
+void InitSelectScene(SelectScene* ss)
 {
 	ss->fadeIn.isEase = true;
 	ss->isNextScene = false;
