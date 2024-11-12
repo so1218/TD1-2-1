@@ -45,8 +45,8 @@ Scene UpdateTitleScene(TitleScene* ts, SelectScene* ss, Player* player, Map* map
 			}
 			else
 			{
-				InitSelectScene(ss);
-				InitPlayer(player, map);
+				InitSelectScene(ss, player, map);
+				
 				nextScene = Select;
 			}
 		}
