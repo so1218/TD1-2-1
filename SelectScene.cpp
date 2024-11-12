@@ -11,7 +11,7 @@
 // セレクトシーンの更新処理
 //========================================================
 
-Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bossT1, PlayScene* ps, GameManager* gm)
+Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, PlayScene* ps, GameManager* gm)
 {
 	Scene nextScene = Select;
 
@@ -30,7 +30,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 		{
 			if (ss->tutorialPos.y >= player->pos.y && ss->tutorialPos.y + ss->tutorialHeight <= player->pos.y + player->radius.y)
 			{
-				nextScene = Play;
+				
 				ss->fadeOut.isEase = true;
 				ss->isNextScene = true;
 			}
@@ -69,8 +69,6 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 			}
 		}
 
-
-
 		//次のシーンへのトリガー
 		if (ss->gm->keys[DIK_SPACE] && !ss->gm->preKeys[DIK_SPACE])
 		{
@@ -89,13 +87,8 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 			else
 			{
 				MapSetting(map);
-				InitBoss(bossT1, map);
-				InitPlayer(player, map);
-				InitPlayScene(ps);
-				InitCenterToAroundParticle(bossT1->aroundParticle);
-				InitGoUpAroundParticle(player->aroundParticle);
-				Novice::SetJoystickDeadZone(0, 8000, 8000); // 左右スティックのデッドゾーンを設定
-
+				InitPlayScene(ps, boss, player, map);
+				
 				nextScene = Play;
 
 			}
@@ -152,8 +145,10 @@ void DrawSelectScene(SelectScene* ss, Player* player)
 // セレクトシーンの初期化
 //========================================================
 
-void InitSelectScene(SelectScene* ss)
+void InitSelectScene(SelectScene* ss, Player* player, Map* map)
 {
 	ss->fadeIn.isEase = true;
 	ss->isNextScene = false;
+
+	InitPlayer(player, map);
 }
