@@ -11,7 +11,7 @@
 // セレクトシーンの更新処理
 //========================================================
 
-Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bossT1, PlayScene* ps, GameManager* gm)
+Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, PlayScene* ps, GameManager* gm)
 {
 	Scene nextScene = Select;
 
@@ -30,6 +30,11 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 			// チュートリアルステージに入る処理
 			if (ss->tutorialDoor.vertex.leftTop.x <= player->pos.x && ss->tutorialDoor.vertex.rightTop.x >= player->pos.x + player->radius.x)
 			{
+
+				
+				ss->fadeOut.isEase = true;
+				ss->isNextScene = true;
+
 				// 上から侵入できないようにする処理
 				if (ss->tutorialDoor.vertex.leftTop.y <= player->pos.y && ss->tutorialDoor.vertex.leftTop.y >= player->pos.y - player->radius.y)
 				{
@@ -42,6 +47,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 					ss->isNextScene = true;
 					ss->isSceneChange = true;
 				}
+
 			}
 
 			if (ss->tutorialDoor.vertex.leftTop.y >= player->pos.y && ss->tutorialDoor.vertex.lehtBottom.y <= player->pos.y)
@@ -124,6 +130,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 				}
 			}
 
+
 			// ステージ3に入る処理
 			if (ss->stageThreeDoor.vertex.leftTop.x <= player->pos.x && ss->stageThreeDoor.vertex.rightTop.x >= player->pos.x + player->radius.x)
 			{
@@ -157,6 +164,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 			}
 		}
 
+
 		//次のシーンへのトリガー
 		if (ss->gm->keys[DIK_SPACE] && !ss->gm->preKeys[DIK_SPACE])
 		{
@@ -174,6 +182,10 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 			else
 			{
 				MapSetting(map);
+
+				InitPlayScene(ps, boss, player, map);
+				
+
 				InitBoss(bossT1, map);
 				InitPlayer(player, map);
 				InitPlayScene(ps);
@@ -181,6 +193,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 				InitGoUpAroundParticle(player->aroundParticle);
 				Novice::SetJoystickDeadZone(0, 8000, 8000); // 左右スティックのデッドゾーンを設定
 				ss->isSceneChange = false;
+
 				nextScene = Play;
 
 			}
@@ -265,10 +278,13 @@ void DrawSelectScene(SelectScene* ss, Player* player)
 // セレクトシーンの初期化
 //========================================================
 
-void InitSelectScene(SelectScene* ss)
+void InitSelectScene(SelectScene* ss, Player* player, Map* map)
 {
 	ss->fadeIn.isEase = true;
 	ss->isNextScene = false;
+
+
+	InitPlayer(player, map);
 
 	ss->tutorialDoor.pos.x = 640.0f;
 	ss->tutorialDoor.pos.y = 300.0f;
@@ -301,5 +317,6 @@ void InitSelectScene(SelectScene* ss)
 
 	CalcVertexRectangle(&ss->stageThreeDoor);
 	ConvertWorldToScreenRectangle(&ss->stageThreeDoor);
+
 
 }

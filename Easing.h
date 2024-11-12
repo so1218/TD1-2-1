@@ -34,6 +34,9 @@ void CountEaseTimerMoveBossT1(Easing& easing);
 //EaseOutのイージングタイマー
 void CountEaseOutTimer(Easing& easing);
 
+//EaseInのイージングタイマー
+void CountEaseInTimer(Easing& easing);
+
 // イージングの初期化
 void InitializeEasing(Easing& easing);
 

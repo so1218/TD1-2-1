@@ -2,6 +2,6 @@
 
 #include "Structures.h"
 
-void isColliding();
+bool CheckRectangleRectangleCollision(RectangleObject* rect1, RectangleObject* rect2);
 
-void isCollidingAll();
+

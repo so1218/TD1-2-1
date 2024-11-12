@@ -42,7 +42,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Player player;
 	Camera camera;
 	Easing easing;
-	BossType1 bossT1;
+	Boss boss;
 
 	InitTitleScene(&ts);
 	AudioInitialize();
@@ -85,13 +85,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case Select:
 
-			currentScene = UpdateSelectScene(&ss, &map, &player, &bossT1, &ps, &gm);
+			currentScene = UpdateSelectScene(&ss, &map, &player, &boss, &ps, &gm);
 
 			break;
 
 		case Play:
 
-			currentScene = UpdatePlayScene(&ps, &player, &gm, &bossT1, &ss);
+			currentScene = UpdatePlayScene(&ps, &player, &gm, &boss, &ss, &map);
 
 			break;
 
@@ -121,7 +121,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case Play:
 
-			DrawPlayScene(&ps, &map, &player, &bossT1);
+			DrawPlayScene(&ps, &map, &player, &boss);
 
 			break;
 

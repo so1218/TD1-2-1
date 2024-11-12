@@ -53,3 +53,17 @@ float CalculateDistance(const Vector2& a, const Vector2& b)
 	return sqrtf((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
 
 }
+
+//ベクトルの正規化の関数
+Vector2 CalculateNormalize(Vector2& vec)
+{
+	float length = sqrtf(vec.x * vec.x + vec.y * vec.y);
+
+	if (length == 0)
+	{
+		return Vector2(0, 0);
+	}
+
+	// 正規化されたベクトルを返す
+	return Vector2(vec.x / length, vec.y / length);
+}
