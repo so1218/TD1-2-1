@@ -8,6 +8,7 @@
 #include "Calculate.h"
 #include <stdlib.h>
 #include "BlendMode.h"
+#include "GrovalTextureHandles.h"
 
 //中心から周囲に向かうEmitterRangeの範囲で発生するパーティクル(aroundParticle->amountを初期化すること)
 void UpdateCenterToAroundParticle(Particle* particle, Vector2* startPos)
@@ -85,11 +86,11 @@ void DrawCenterToAroundParticle(Particle* particle)
 				static_cast<int>(particle[i].screenVertex.leftTop.y),
 				static_cast<int>(particle[i].screenVertex.rightTop.x),
 				static_cast<int>(particle[i].screenVertex.rightTop.y),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.x),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.y),
+				static_cast<int>(particle[i].screenVertex.leftBottom.x),
+				static_cast<int>(particle[i].screenVertex.leftBottom.y),
 				static_cast<int>(particle[i].screenVertex.rightBottom.x),
 				static_cast<int>(particle[i].screenVertex.rightBottom.y),
-				0, 0, 0, 0, 0, particle[i].color);
+				0, 0, 64, 64, GHs[TextureName::Particle1], particle[i].color);
 
 			ResetBlendMode();
 		}
@@ -155,7 +156,6 @@ void UpdateGoUpAroundParticle(Particle* particle, Vector2* startPos)
 		if (particle[i].isExist)
 		{
 			
-
 			if (!particle[i].easingInOut.isEase)
 			{
 				particle[i].isExist = false;
@@ -193,8 +193,8 @@ void DrawGoUpAroundParticle(Particle* particle)
 				static_cast<int>(particle[i].screenVertex.leftTop.y),
 				static_cast<int>(particle[i].screenVertex.rightTop.x),
 				static_cast<int>(particle[i].screenVertex.rightTop.y),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.x),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.y),
+				static_cast<int>(particle[i].screenVertex.leftBottom.x),
+				static_cast<int>(particle[i].screenVertex.leftBottom.y),
 				static_cast<int>(particle[i].screenVertex.rightBottom.x),
 				static_cast<int>(particle[i].screenVertex.rightBottom.y),
 				0, 0, 0, 0, 0, particle[i].color);
@@ -295,11 +295,11 @@ void DrawLikeSmokeParticle(Particle* particle)
 				static_cast<int>(particle[i].screenVertex.leftTop.y),
 				static_cast<int>(particle[i].screenVertex.rightTop.x),
 				static_cast<int>(particle[i].screenVertex.rightTop.y),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.x),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.y),
+				static_cast<int>(particle[i].screenVertex.leftBottom.x),
+				static_cast<int>(particle[i].screenVertex.leftBottom.y),
 				static_cast<int>(particle[i].screenVertex.rightBottom.x),
 				static_cast<int>(particle[i].screenVertex.rightBottom.y),
-				0, 0, 0, 0, 0, particle[i].color);
+				0, 0, 64, 64, GHs[TextureName::Particle1], particle[i].color);
 
 			ResetBlendMode();
 		}
@@ -330,29 +330,32 @@ void UpdateGoUpGravityParticle(Particle* particle, Vector2* startPos)
 	
 	for (int i = 0; i < particle->amount; ++i)
 	{
-
-		if (!particle[i].isExist)
+		if (!particle[i].hasExisted)
 		{
-			particle->angle = static_cast<float>(rand()) / RAND_MAX * 2.0f * float(M_PI);
-			particle[i].pos.x = static_cast<float>(startPos->x) + (static_cast<int>(rand()) % particle->emitterRange.x - particle->emitterRange.x / 2);
-			particle[i].pos.y = static_cast<float>(startPos->y) + (static_cast<int>(rand()) % particle->emitterRange.y - particle->emitterRange.y / 2);
-
-			if (particle[i].pos.x >= startPos->x)
+			if (!particle[i].isExist)
 			{
-				particle[i].speed = { static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f,static_cast<float>(rand()) / RAND_MAX * 4.0f + 8.0f };
+				particle->angle = static_cast<float>(rand()) / RAND_MAX * 2.0f * float(M_PI);
+				particle[i].pos.x = static_cast<float>(startPos->x) + (static_cast<int>(rand()) % particle->emitterRange.x - particle->emitterRange.x / 2);
+				particle[i].pos.y = static_cast<float>(startPos->y) + (static_cast<int>(rand()) % particle->emitterRange.y - particle->emitterRange.y / 2);
+
+				if (particle[i].pos.x >= startPos->x)
+				{
+					particle[i].speed = { static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f,static_cast<float>(rand()) / RAND_MAX * 4.0f + 8.0f };
+				}
+				else
+				{
+					particle[i].speed = { -static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f,static_cast<float>(rand()) / RAND_MAX * 4.0f + 8.0f };
+				}
+				particle[i].velocity.x = particle[i].speed.x;
+				particle[i].velocity.y = particle[i].speed.y;
+
+				particle[i].isExist = true;
+				particle[i].hasExisted = true;
+				particle[i].easingInOut.isEase = true;
+
+				particle[i].blendMode.mode = particle[i].blendMode.choiceType;
+
 			}
-			else
-			{
-				particle[i].speed = { -static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f,static_cast<float>(rand()) / RAND_MAX * 4.0f + 8.0f };
-			}
-			particle[i].velocity.x = particle[i].speed.x;
-			particle[i].velocity.y = particle[i].speed.y;
-
-			particle[i].isExist = true;
-			particle[i].easingInOut.isEase = true;
-
-			particle[i].blendMode.mode = particle[i].blendMode.choiceType;
-
 		}
 	}
 	
@@ -368,6 +371,7 @@ void UpdateGoUpGravityParticle(Particle* particle, Vector2* startPos)
 			if (!particle[i].easingInOut.isEase)
 			{
 				particle[i].isExist = false;
+				particle->isEmit = false;
 			}
 
 			ColorLinearInterpolation(0xff0000ff, 0xff000000, particle[i].color, particle[i].easingInOut);
@@ -393,11 +397,11 @@ void DrawGoUpGravityParticle(Particle* particle)
 				static_cast<int>(particle[i].screenVertex.leftTop.y),
 				static_cast<int>(particle[i].screenVertex.rightTop.x),
 				static_cast<int>(particle[i].screenVertex.rightTop.y),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.x),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.y),
+				static_cast<int>(particle[i].screenVertex.leftBottom.x),
+				static_cast<int>(particle[i].screenVertex.leftBottom.y),
 				static_cast<int>(particle[i].screenVertex.rightBottom.x),
 				static_cast<int>(particle[i].screenVertex.rightBottom.y),
-				0, 0, 0, 0, 0, particle[i].color);
+				0, 0, 64, 64, GHs[TextureName::Particle1], particle[i].color);
 
 			ResetBlendMode();
 		}
@@ -415,7 +419,7 @@ void InitGoUpGravityParticle(Particle* particle)
 		particle[i].height = 10;
 
 		particle[i].isExist = false;
-
+		particle[i].hasExisted = false;
 	}
 
 }
@@ -428,38 +432,43 @@ void UpdateImpactDustCloudParticle(Particle* particle, Vector2* startPos)
 
 	for (int i = 0; i < particle->amount; ++i)
 	{
-
-		if (!particle[i].isExist)
+		if (!particle[i].hasExisted)
 		{
-			particle->angle = static_cast<float>(rand()) / RAND_MAX * 2.0f * float(M_PI);
-			particle[i].pos.x = static_cast<float>(startPos->x) + (static_cast<int>(rand()) % particle->emitterRange.x - particle->emitterRange.x / 2);
-			particle[i].pos.y = static_cast<float>(startPos->y) + (static_cast<int>(rand()) % particle->emitterRange.y - particle->emitterRange.y / 2);
-
-			if (particle[i].pos.x >= startPos->x)
+			if (!particle[i].isExist)
 			{
-				particle[i].speed.x = static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f;
-			}
-			else
-			{
-				particle[i].speed.x = -static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f;
-			}
+				particle->angle = static_cast<float>(rand()) / RAND_MAX * 2.0f * float(M_PI);
+				particle[i].pos.x = static_cast<float>(startPos->x) + (static_cast<int>(rand()) % particle->emitterRange.x - particle->emitterRange.x / 2);
+				particle[i].pos.y = static_cast<float>(startPos->y) + (static_cast<int>(rand()) % particle->emitterRange.y - particle->emitterRange.y / 2);
 
-			if (particle[i].pos.y >= startPos->y)
-			{
-				particle[i].speed.y = static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f;
+				if (particle[i].pos.x >= startPos->x)
+				{
+					particle[i].speed.x = static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f;
+				}
+				else
+				{
+					particle[i].speed.x = -static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f;
+				}
+
+				if (particle[i].pos.y >= startPos->y)
+				{
+					particle[i].speed.y = static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f;
+				}
+				else
+				{
+					particle[i].speed.y = -static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f;
+				}
+
+				particle[i].velocity.x = particle[i].speed.x;
+				particle[i].velocity.y = particle[i].speed.y;
+
+				particle->gravity = 0.2f;
+
+				particle[i].isExist = true;
+				particle[i].hasExisted = true;
+				particle[i].easingInOut.isEase = true;
+				particle[i].blendMode.mode = particle[i].blendMode.choiceType;
+
 			}
-			else
-			{
-				particle[i].speed.y = -static_cast<float>(rand()) / RAND_MAX * 2.0f + 1.0f;
-			}
-
-			particle[i].velocity.x = particle[i].speed.x;
-			particle[i].velocity.y = particle[i].speed.y;
-
-			particle[i].isExist = true;
-			particle[i].easingInOut.isEase = true;
-			particle[i].blendMode.mode = particle[i].blendMode.choiceType;
-
 		}
 	}
 
@@ -470,11 +479,12 @@ void UpdateImpactDustCloudParticle(Particle* particle, Vector2* startPos)
 		{
 			particle[i].pos.x += particle[i].velocity.x;
 			particle[i].pos.y += particle[i].velocity.y;
-			
+			particle[i].velocity.y -= particle->gravity;
 
 			if (!particle[i].easingInOut.isEase)
 			{
 				particle[i].isExist = false;
+				particle->isEmit = false;
 			}
 
 			ColorLinearInterpolation(0xff00ffff, 0xff00ff00, particle[i].color, particle[i].easingInOut);
@@ -500,8 +510,8 @@ void DrawImpactDustCloudParticle(Particle* particle)
 				static_cast<int>(particle[i].screenVertex.leftTop.y),
 				static_cast<int>(particle[i].screenVertex.rightTop.x),
 				static_cast<int>(particle[i].screenVertex.rightTop.y),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.x),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.y),
+				static_cast<int>(particle[i].screenVertex.leftBottom.x),
+				static_cast<int>(particle[i].screenVertex.leftBottom.y),
 				static_cast<int>(particle[i].screenVertex.rightBottom.x),
 				static_cast<int>(particle[i].screenVertex.rightBottom.y),
 				0, 0, 0, 0, 0, particle[i].color);
@@ -514,10 +524,10 @@ void DrawImpactDustCloudParticle(Particle* particle)
 void InitImpactDustCloudParticle(Particle* particle)
 {
 
-	particle->emitterRange = { 40,40 };
+	particle->emitterRange = { 60,40 };
 	for (int i = 0; i < particle->amount; ++i)
 	{
-		particle[i].easingInOut.interval = 0.05f;
+		particle[i].easingInOut.interval = 0.01f;
 		particle[i].width = 10;
 		particle[i].height = 10;
 
@@ -602,8 +612,8 @@ void DrawToCenterParticle(Particle* particle)
 				static_cast<int>(particle[i].screenVertex.leftTop.y),
 				static_cast<int>(particle[i].screenVertex.rightTop.x),
 				static_cast<int>(particle[i].screenVertex.rightTop.y),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.x),
-				static_cast<int>(particle[i].screenVertex.lehtBottom.y),
+				static_cast<int>(particle[i].screenVertex.leftBottom.x),
+				static_cast<int>(particle[i].screenVertex.leftBottom.y),
 				static_cast<int>(particle[i].screenVertex.rightBottom.x),
 				static_cast<int>(particle[i].screenVertex.rightBottom.y),
 				0, 0, 0, 0, 0, particle[i].color);
@@ -622,10 +632,69 @@ void InitToCenterParticle(Particle* particle)
 		particle[i].easingIn.interval = 0.0000005f;
 		particle[i].width = 10;
 		particle[i].height = 10;
-
 		
 		particle[i].isExist = false;
 
 	}
 
+}
+
+// 隕石のようなパーティクル
+void UpdateMateoriteParticle(Particle* particle, Vector2* startPos)
+{
+	if (particle->frameCount <= 0)
+	{
+		particle->frameCount = particle->appearInterval;
+	}
+
+	// フレームごとに新しいパーティクルを生成
+	if (particle->frameCount == particle->appearInterval)
+	{
+		for (int i = 0; i < particle->amount; ++i)
+		{
+
+			if (!particle[i].isExist)
+			{
+
+				particle->angle = static_cast<float>(rand()) / RAND_MAX * 2.0f * float(M_PI);
+				particle[i].pos.x = static_cast<float>(startPos->x) + (static_cast<int>(rand()) % particle->emitterRange.x - particle->emitterRange.x / 2);
+				particle[i].pos.y = static_cast<float>(startPos->y) + (static_cast<int>(rand()) % particle->emitterRange.y - particle->emitterRange.y / 2);
+
+				particle[i].isExist = true;
+				particle[i].easingInOut.isEase = true;
+				particle[i].easingIn.isEase = true;
+				particle[i].blendMode.mode = particle[i].blendMode.choiceType;
+
+				break;
+
+			}
+		}
+	}
+
+	particle->frameCount -= 1;
+
+	for (int i = 0; i < particle->amount; ++i)
+	{
+		if (particle[i].isExist)
+		{
+			LinearInterpolation(particle[i].pos,
+				*startPos,
+				particle[i].pos,
+				particle[i].easingIn);
+			CountEaseOutTimer(particle[i].easingIn);
+
+
+			if (!particle[i].easingInOut.isEase)
+			{
+				particle[i].isExist = false;
+			}
+
+			ColorLinearInterpolation(0xff6ff4ff, 0xff000000, particle[i].color, particle[i].easingInOut);
+			CountEaseInOutTimer(particle[i].easingInOut);
+		}
+
+		CalcVertexRectangle(&particle[i]);
+		ConvertWorldToScreenRectangle(&particle[i]);
+
+	}
 }

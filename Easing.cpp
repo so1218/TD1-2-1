@@ -90,7 +90,7 @@ void CountEaseInOutTimer(const int end, int& current, Easing& easing)
 
 }
 
-void CountEaseInOutTimer(const float end, float& current, Easing& easing) 
+void CountEaseInOutTimer(const float end, float& current, Easing& easing)
 {
 
 	if (easing.timer > 1.0f) {

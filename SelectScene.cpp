@@ -17,7 +17,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 
 	if (ss->fadeIn.isEase)
 	{
-		ColorLinearInterpolation(ss->fadeColor, transparent, ss->fadeColor, ss->fadeIn);
+		ColorLinearInterpolation(ss->fadeIn.startColor, transparent, ss->fadeColor, ss->fadeIn);
 		CountEaseInOutTimer(ss->fadeIn);
 	}
 
@@ -30,27 +30,21 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 			// チュートリアルステージに入る処理
 			if (ss->tutorialDoor.vertex.leftTop.x <= player->pos.x && ss->tutorialDoor.vertex.rightTop.x >= player->pos.x + player->radius.x)
 			{
-
-				
-				ss->fadeOut.isEase = true;
-				ss->isNextScene = true;
-
 				// 上から侵入できないようにする処理
 				if (ss->tutorialDoor.vertex.leftTop.y <= player->pos.y && ss->tutorialDoor.vertex.leftTop.y >= player->pos.y - player->radius.y)
 				{
 					player->pos.y = ss->tutorialDoor.vertex.leftTop.y + player->radius.y;
 				}
 
-				if (ss->tutorialDoor.vertex.leftTop.y >= player->pos.y && ss->tutorialDoor.vertex.lehtBottom.y <= player->pos.y - player->radius.y)
+				if (ss->tutorialDoor.vertex.leftTop.y >= player->pos.y && ss->tutorialDoor.vertex.leftBottom.y <= player->pos.y - player->radius.y)
 				{
 					ss->fadeOut.isEase = true;
 					ss->isNextScene = true;
 					ss->isSceneChange = true;
 				}
-
 			}
 
-			if (ss->tutorialDoor.vertex.leftTop.y >= player->pos.y && ss->tutorialDoor.vertex.lehtBottom.y <= player->pos.y)
+			if (ss->tutorialDoor.vertex.leftTop.y >= player->pos.y && ss->tutorialDoor.vertex.leftBottom.y <= player->pos.y)
 			{
 				// 右から侵入できないようにする処理
 				if (ss->tutorialDoor.vertex.rightTop.x <= player->pos.x + player->radius.x && ss->tutorialDoor.vertex.rightTop.x >= player->pos.x - player->radius.x)
@@ -75,7 +69,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 				}
 
 
-				if (ss->stageOneDoor.vertex.leftTop.y >= player->pos.y && ss->stageOneDoor.vertex.lehtBottom.y <= player->pos.y - player->radius.y)
+				if (ss->stageOneDoor.vertex.leftTop.y >= player->pos.y && ss->stageOneDoor.vertex.leftBottom.y <= player->pos.y - player->radius.y)
 				{
 					ss->fadeOut.isEase = true;
 					ss->isNextScene = true;
@@ -83,7 +77,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 				}
 			}
 
-			if (ss->stageOneDoor.vertex.leftTop.y >= player->pos.y && ss->stageOneDoor.vertex.lehtBottom.y <= player->pos.y)
+			if (ss->stageOneDoor.vertex.leftTop.y >= player->pos.y && ss->stageOneDoor.vertex.leftBottom.y <= player->pos.y)
 			{
 				// 右から侵入できないようにする処理
 				if (ss->stageOneDoor.vertex.rightTop.x <= player->pos.x + player->radius.x && ss->stageOneDoor.vertex.rightTop.x >= player->pos.x - player->radius.x)
@@ -107,7 +101,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 					player->pos.y = ss->stageTwoDoor.vertex.leftTop.y + player->radius.y;
 				}
 
-				if (ss->stageTwoDoor.vertex.leftTop.y >= player->pos.y && ss->stageTwoDoor.vertex.lehtBottom.y <= player->pos.y - player->radius.y)
+				if (ss->stageTwoDoor.vertex.leftTop.y >= player->pos.y && ss->stageTwoDoor.vertex.leftBottom.y <= player->pos.y - player->radius.y)
 				{
 					ss->fadeOut.isEase = true;
 					ss->isNextScene = true;
@@ -115,7 +109,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 				}
 			}
 
-			if (ss->stageTwoDoor.vertex.leftTop.y >= player->pos.y && ss->stageTwoDoor.vertex.lehtBottom.y <= player->pos.y)
+			if (ss->stageTwoDoor.vertex.leftTop.y >= player->pos.y && ss->stageTwoDoor.vertex.leftBottom.y <= player->pos.y)
 			{
 				// 右から侵入できないようにする処理
 				if (ss->stageTwoDoor.vertex.rightTop.x <= player->pos.x + player->radius.x && ss->stageTwoDoor.vertex.rightTop.x >= player->pos.x - player->radius.x)
@@ -140,7 +134,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 					player->pos.y = ss->stageThreeDoor.vertex.leftTop.y + player->radius.y;
 				}
 
-				if (ss->stageThreeDoor.vertex.leftTop.y >= player->pos.y && ss->stageThreeDoor.vertex.lehtBottom.y <= player->pos.y - player->radius.y)
+				if (ss->stageThreeDoor.vertex.leftTop.y >= player->pos.y && ss->stageThreeDoor.vertex.leftBottom.y <= player->pos.y - player->radius.y)
 				{
 					ss->fadeOut.isEase = true;
 					ss->isNextScene = true;
@@ -148,7 +142,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 				}
 			}
 
-			if (ss->stageThreeDoor.vertex.leftTop.y >= player->pos.y && ss->stageThreeDoor.vertex.lehtBottom.y <= player->pos.y)
+			if (ss->stageThreeDoor.vertex.leftTop.y >= player->pos.y && ss->stageThreeDoor.vertex.leftBottom.y <= player->pos.y)
 			{
 				// 右から侵入できないようにする処理
 				if (ss->stageThreeDoor.vertex.rightTop.x <= player->pos.x + player->radius.x && ss->stageThreeDoor.vertex.rightTop.x >= player->pos.x - player->radius.x)
@@ -164,7 +158,6 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 			}
 		}
 
-
 		//次のシーンへのトリガー
 		if (ss->gm->keys[DIK_SPACE] && !ss->gm->preKeys[DIK_SPACE])
 		{
@@ -176,7 +169,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 		{
 			if (ss->fadeOut.isEase)
 			{
-				ColorLinearInterpolation(ss->fadeColor, opaque, ss->fadeColor, ss->fadeOut);
+				ColorLinearInterpolation(ss->fadeOut.startColor, opaque, ss->fadeColor, ss->fadeOut);
 				CountEaseInOutTimer(ss->fadeOut);
 			}
 			else
@@ -185,13 +178,6 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 
 				InitPlayScene(ps, boss, player, map);
 				
-
-				InitBoss(bossT1, map);
-				InitPlayer(player, map);
-				InitPlayScene(ps);
-				InitCenterToAroundParticle(bossT1->aroundParticle);
-				InitGoUpAroundParticle(player->aroundParticle);
-				Novice::SetJoystickDeadZone(0, 8000, 8000); // 左右スティックのデッドゾーンを設定
 				ss->isSceneChange = false;
 
 				nextScene = Play;
@@ -199,9 +185,7 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, Boss* boss, P
 			}
 		}
 	}
-
 	return nextScene;
-
 }
 
 //========================================================
@@ -225,8 +209,8 @@ void DrawSelectScene(SelectScene* ss, Player* player)
 		static_cast<int>(ss->tutorialDoor.screenVertex.leftTop.y),
 		static_cast<int>(ss->tutorialDoor.screenVertex.rightTop.x),
 		static_cast<int>(ss->tutorialDoor.screenVertex.rightTop.y),
-		static_cast<int>(ss->tutorialDoor.screenVertex.lehtBottom.x),
-		static_cast<int>(ss->tutorialDoor.screenVertex.lehtBottom.y),
+		static_cast<int>(ss->tutorialDoor.screenVertex.leftBottom.x),
+		static_cast<int>(ss->tutorialDoor.screenVertex.leftBottom.y),
 		static_cast<int>(ss->tutorialDoor.screenVertex.rightBottom.x),
 		static_cast<int>(ss->tutorialDoor.screenVertex.rightBottom.y),
 		0, 0, 0, 0, 0, BLACK);
@@ -236,8 +220,8 @@ void DrawSelectScene(SelectScene* ss, Player* player)
 		static_cast<int>(ss->stageOneDoor.screenVertex.leftTop.y),
 		static_cast<int>(ss->stageOneDoor.screenVertex.rightTop.x),
 		static_cast<int>(ss->stageOneDoor.screenVertex.rightTop.y),
-		static_cast<int>(ss->stageOneDoor.screenVertex.lehtBottom.x),
-		static_cast<int>(ss->stageOneDoor.screenVertex.lehtBottom.y),
+		static_cast<int>(ss->stageOneDoor.screenVertex.leftBottom.x),
+		static_cast<int>(ss->stageOneDoor.screenVertex.leftBottom.y),
 		static_cast<int>(ss->stageOneDoor.screenVertex.rightBottom.x),
 		static_cast<int>(ss->stageOneDoor.screenVertex.rightBottom.y),
 		0, 0, 0, 0, 0, RED);
@@ -247,8 +231,8 @@ void DrawSelectScene(SelectScene* ss, Player* player)
 		static_cast<int>(ss->stageTwoDoor.screenVertex.leftTop.y),
 		static_cast<int>(ss->stageTwoDoor.screenVertex.rightTop.x),
 		static_cast<int>(ss->stageTwoDoor.screenVertex.rightTop.y),
-		static_cast<int>(ss->stageTwoDoor.screenVertex.lehtBottom.x),
-		static_cast<int>(ss->stageTwoDoor.screenVertex.lehtBottom.y),
+		static_cast<int>(ss->stageTwoDoor.screenVertex.leftBottom.x),
+		static_cast<int>(ss->stageTwoDoor.screenVertex.leftBottom.y),
 		static_cast<int>(ss->stageTwoDoor.screenVertex.rightBottom.x),
 		static_cast<int>(ss->stageTwoDoor.screenVertex.rightBottom.y),
 		0, 0, 0, 0, 0, WHITE);
@@ -258,8 +242,8 @@ void DrawSelectScene(SelectScene* ss, Player* player)
 		static_cast<int>(ss->stageThreeDoor.screenVertex.leftTop.y),
 		static_cast<int>(ss->stageThreeDoor.screenVertex.rightTop.x),
 		static_cast<int>(ss->stageThreeDoor.screenVertex.rightTop.y),
-		static_cast<int>(ss->stageThreeDoor.screenVertex.lehtBottom.x),
-		static_cast<int>(ss->stageThreeDoor.screenVertex.lehtBottom.y),
+		static_cast<int>(ss->stageThreeDoor.screenVertex.leftBottom.x),
+		static_cast<int>(ss->stageThreeDoor.screenVertex.leftBottom.y),
 		static_cast<int>(ss->stageThreeDoor.screenVertex.rightBottom.x),
 		static_cast<int>(ss->stageThreeDoor.screenVertex.rightBottom.y),
 		0, 0, 0, 0, 0, BLUE);
@@ -281,6 +265,8 @@ void DrawSelectScene(SelectScene* ss, Player* player)
 void InitSelectScene(SelectScene* ss, Player* player, Map* map)
 {
 	ss->fadeIn.isEase = true;
+	ss->fadeIn.startColor = opaque;
+	ss->fadeOut.startColor = transparent;
 	ss->isNextScene = false;
 
 

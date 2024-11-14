@@ -98,6 +98,12 @@
     <ClCompile Include="BlendMode.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="GrovalTextureHandles.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Draw.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -192,5 +198,7 @@
     <ClInclude Include="Vector.h" />
     <ClInclude Include="BossAction.h" />
     <ClInclude Include="BlendMode.h" />
+    <ClInclude Include="GrovalTextureHandles.h" />
+    <ClInclude Include="Draw.h" />
   </ItemGroup>
 </Project>

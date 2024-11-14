@@ -4,6 +4,8 @@
 
 // 3x3行列と3x3行列の積
 void Multiply(const Matrix3x3* matrix1, const Matrix3x3* matrix2, Matrix3x3* result);
+// 3x3行列と3次元ベクトルの積
+Vector3 Multiply(const Matrix3x3& matrix, const Vector3& vec);
 
 //スケーリング行列の関数
 void MakeScaleMatrix(Matrix3x3* scaleMatrix, const Vector2* scale);
@@ -17,3 +19,6 @@ void Transform(const Matrix3x3* matrix, const Vector2* vector, Vector2* result);
 
 //アフィン行列の関数
 void MakeAffineMatrix(const Vector2* scale, float theta, const Vector2* translate, Matrix3x3* affineMatrix);
+
+//拡縮に関する関数
+void ApplyScalingToRectangle(RectangleObject* rectangle);

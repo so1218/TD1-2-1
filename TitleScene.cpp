@@ -17,7 +17,7 @@ Scene UpdateTitleScene(TitleScene* ts, SelectScene* ss, Player* player, Map* map
 
 	if (ts->fadeIn.isEase)
 	{
-		ColorLinearInterpolation(ts->fadeColor, transparent, ts->fadeColor, ts->fadeIn);
+		ColorLinearInterpolation(ts->fadeIn.startColor, transparent, ts->fadeColor, ts->fadeIn);
 		CountEaseInOutTimer(ts->fadeIn);
 	}
 	else
@@ -40,7 +40,7 @@ Scene UpdateTitleScene(TitleScene* ts, SelectScene* ss, Player* player, Map* map
 		{
 			if (ts->fadeOut.isEase)
 			{
-				ColorLinearInterpolation(ts->fadeColor, opaque, ts->fadeColor, ts->fadeOut);
+				ColorLinearInterpolation(ts->fadeOut.startColor, opaque, ts->fadeColor, ts->fadeOut);
 				CountEaseInOutTimer(ts->fadeOut);
 			}
 			else
@@ -78,8 +78,8 @@ void DrawTitleScene(TitleScene* ts)
 		static_cast<int>(ts->titleLogo.screenVertex.leftTop.y),
 		static_cast<int>(ts->titleLogo.screenVertex.rightTop.x),
 		static_cast<int>(ts->titleLogo.screenVertex.rightTop.y),
-		static_cast<int>(ts->titleLogo.screenVertex.lehtBottom.x),
-		static_cast<int>(ts->titleLogo.screenVertex.lehtBottom.y),
+		static_cast<int>(ts->titleLogo.screenVertex.leftBottom.x),
+		static_cast<int>(ts->titleLogo.screenVertex.leftBottom.y),
 		static_cast<int>(ts->titleLogo.screenVertex.rightBottom.x),
 		static_cast<int>(ts->titleLogo.screenVertex.rightBottom.y),
 		0, 0, 0, 0, 0, WHITE);
@@ -97,6 +97,8 @@ void DrawTitleScene(TitleScene* ts)
 void InitTitleScene(TitleScene* ts) 
 {
 	ts->fadeIn.isEase = true;
+	ts->fadeIn.startColor = opaque;
+	ts->fadeOut.startColor = transparent;
 	ts->isNextScene = false;
 
 	ts->titleLogo.pos.x = 600;

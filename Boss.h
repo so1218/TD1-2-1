@@ -6,6 +6,8 @@
 void UpdateMoveBoss(Boss* boss, Player* player);
 
 void UpdateMoveBossT1(Boss* boss, Player* player);
+//ボスT1とのノックバック判定
+void KnockbackBossT1Func(Boss* boss, Player* player);
 
 // ボスの描画処理
 void DrawBoss(Boss* boss);
