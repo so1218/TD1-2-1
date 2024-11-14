@@ -521,10 +521,35 @@ struct TitleScene: GameObject
 	Easing colorEase;
 	
 	GameObject titleLogo;
-
+	Easing titleFadeOut;
+	Easing titleFadeIn;
+	unsigned int titleFadeColor = transparent;
+	
 	float amplitude;
 	float theta;
 
+	GameObject titleOne;
+	GameObject titleTwo;
+	GameObject titleThree;
+	GameObject titleFour;
+
+	Easing titleOneEase;
+	Easing titleTwoEase;
+	Easing titleThreeEase;
+	Easing titleFourEase;
+
+	Vector2 titleOneStart;
+	Vector2 titleOneEnd;
+	Vector2 titleTwoStart;
+	Vector2 titleTwoEnd;
+	Vector2 titleThreeStart;
+	Vector2 titleThreeEnd;
+	Vector2 titleFourStart;
+	Vector2 titleFourEnd;
+
+	Easing titleLogoFade;
+	unsigned int titleLogoColor = opaque;
+	bool istitleLogoComplete = false;
 };
 
 //セレクトシーンの構造体
