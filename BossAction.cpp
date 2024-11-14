@@ -8,11 +8,8 @@
 //弾をいくつかの方向に発射する関数
 void FireSomewayDirectionBullet(Bullet* bullet, Vector2 startPos)
 {
-    
-
     bullet->isAction = false;
 
-   
     for (int i = 0; i < bullet->amount; ++i)
     {
         if (!bullet[i].hasAction)
@@ -32,9 +29,6 @@ void FireSomewayDirectionBullet(Bullet* bullet, Vector2 startPos)
             }
         }
     }
-    
-       
-   
 
     for (int i = 0; i < bullet->amount; ++i)
     {
@@ -70,8 +64,8 @@ void DrawSomewayDirectionBullet(Bullet* bullet)
                 static_cast<int>(bullet[i].screenVertex.leftTop.y),
                 static_cast<int>(bullet[i].screenVertex.rightTop.x),
                 static_cast<int>(bullet[i].screenVertex.rightTop.y),
-                static_cast<int>(bullet[i].screenVertex.lehtBottom.x),
-                static_cast<int>(bullet[i].screenVertex.lehtBottom.y),
+                static_cast<int>(bullet[i].screenVertex.leftBottom.x),
+                static_cast<int>(bullet[i].screenVertex.leftBottom.y),
                 static_cast<int>(bullet[i].screenVertex.rightBottom.x),
                 static_cast<int>(bullet[i].screenVertex.rightBottom.y),
                 0, 0, 0, 0, 0, bullet[i].color);
@@ -129,8 +123,6 @@ void FireToSomethingBullet(Bullet* bullet, Vector2* start, Vector2* end)
 
                     bullet[i].hasAction = true;
 
-                   
-
                     break;
                 }
             }
@@ -157,8 +149,6 @@ void FireToSomethingBullet(Bullet* bullet, Vector2* start, Vector2* end)
             
         }
 
-        
-
         CalcVertexRectangle(&bullet[i]);
         ConvertWorldToScreenRectangle(&bullet[i]);
 
@@ -176,8 +166,8 @@ void DrawToSomethingBullet(Bullet* bullet)
                 static_cast<int>(bullet[i].screenVertex.leftTop.y),
                 static_cast<int>(bullet[i].screenVertex.rightTop.x),
                 static_cast<int>(bullet[i].screenVertex.rightTop.y),
-                static_cast<int>(bullet[i].screenVertex.lehtBottom.x),
-                static_cast<int>(bullet[i].screenVertex.lehtBottom.y),
+                static_cast<int>(bullet[i].screenVertex.leftBottom.x),
+                static_cast<int>(bullet[i].screenVertex.leftBottom.y),
                 static_cast<int>(bullet[i].screenVertex.rightBottom.x),
                 static_cast<int>(bullet[i].screenVertex.rightBottom.y),
                 0, 0, 0, 0, 0, 0x00ff00ff);
@@ -193,8 +183,7 @@ void InitToSomethingBullet(Bullet* bullet)
     bullet->speed = 5.0f;
     for (int i = 0; i < bullet->amount; ++i)
     {
-        
-
+ 
         bullet[i].width = 10;
         bullet[i].height = 10;
 

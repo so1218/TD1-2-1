@@ -1,5 +1,6 @@
 ﻿#include "Structures.h"
 #include <assert.h>
+#include "Rectangle.h"
 
 // 3x3行列と3x3行列の積
 void Multiply(const Matrix3x3* matrix1, const Matrix3x3* matrix2, Matrix3x3* result)
@@ -18,6 +19,18 @@ void Multiply(const Matrix3x3* matrix1, const Matrix3x3* matrix2, Matrix3x3* res
 		result->m[2][1] = matrix1->m[2][0] * matrix2->m[0][1] + matrix1->m[2][1] * matrix2->m[1][1] + matrix1->m[2][2] * matrix2->m[2][1];
 		result->m[2][2] = matrix1->m[2][0] * matrix2->m[0][2] + matrix1->m[2][1] * matrix2->m[1][2] + matrix1->m[2][2] * matrix2->m[2][2];
 	}
+}
+
+// 3x3行列と3次元ベクトルの積
+Vector3 Multiply(const Matrix3x3& matrix, const Vector3& vec)
+{
+	Vector3 result;
+
+	result.x = matrix.m[0][0] * vec.x + matrix.m[0][1] * vec.y + matrix.m[0][2] * vec.z;
+	result.y = matrix.m[1][0] * vec.x + matrix.m[1][1] * vec.y + matrix.m[1][2] * vec.z;
+	result.z = matrix.m[2][0] * vec.x + matrix.m[2][1] * vec.y + matrix.m[2][2] * vec.z;
+
+	return result;
 }
 
 //スケーリング行列の関数
@@ -108,4 +121,37 @@ void MakeAffineMatrix(const Vector2* scale, float theta, const Vector2* translat
 		Multiply(&scaleMatrix, &rotateMatrix, &scaleRotateMatrix);
 		Multiply(&scaleRotateMatrix, &translateMatrix, affineMatrix);
 	}
+}
+
+void ApplyScalingToRectangle(RectangleObject* rectangle)
+{
+	if (rectangle == nullptr) return; // nullptr チェック
+
+	// スケーリング行列を作成
+	Matrix3x3 scaleMatrix;
+	MakeScaleMatrix(&scaleMatrix, &rectangle->scale);
+
+	// 左上
+	Vector3 leftTop = { rectangle->vertex.leftTop.x, rectangle->vertex.leftTop.y, 1.0f };
+	Vector3 scaledLeftTop = Multiply(scaleMatrix, leftTop);
+	rectangle->vertex.leftTop.x = scaledLeftTop.x;
+	rectangle->vertex.leftTop.y = scaledLeftTop.y;
+
+	// 右上
+	Vector3 rightTop = { rectangle->vertex.rightTop.x, rectangle->vertex.rightTop.y, 1.0f };
+	Vector3 scaledRightTop = Multiply(scaleMatrix, rightTop);
+	rectangle->vertex.rightTop.x = scaledRightTop.x;
+	rectangle->vertex.rightTop.y = scaledRightTop.y;
+
+	// 左下
+	Vector3 leftBottom = { rectangle->vertex.leftBottom.x, rectangle->vertex.leftBottom.y, 1.0f };
+	Vector3 scaledLeftBottom = Multiply(scaleMatrix, leftBottom);
+	rectangle->vertex.leftBottom.x = scaledLeftBottom.x;
+	rectangle->vertex.leftBottom.y = scaledLeftBottom.y;
+
+	// 右下
+	Vector3 rightBottom = { rectangle->vertex.rightBottom.x, rectangle->vertex.rightBottom.y, 1.0f };
+	Vector3 scaledRightBottom = Multiply(scaleMatrix, rightBottom);
+	rectangle->vertex.rightBottom.x = scaledRightBottom.x;
+	rectangle->vertex.rightBottom.y = scaledRightBottom.y;
 }

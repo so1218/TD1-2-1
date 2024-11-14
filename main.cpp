@@ -10,14 +10,27 @@
 #include "PlayScene.h"
 #include "Boss.h"
 #include "GrovalAudio.h"
+#include "GrovalTextureHandles.h"
 
 const char kWindowTitle[] = "TD2";
+
+int GHs[128];
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
+
+	
+	// GHs 配列を初期化
+	for (int i{ 0 }; i < _countof(GHs); ++i)
+	{
+		GHs[i] = -1;
+	}
+
+	// テクスチャ読み込み
+	TextureManager::LoadTextures();
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -26,7 +39,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #if defined(_DEBUG)
 	Scene currentScene = Title;
 #else
-	Scene currentScene = Select;
+	Scene currentScene = Title;
 #endif
 
 

@@ -13,45 +13,15 @@
 
 void UpdateMoveBoss(Boss* boss, Player* player)
 {
-
 	UpdateMoveBossT1(boss, player);
-
 }
+
+
 
 void UpdateMoveBossT1(Boss* boss, Player* player)
 {
 	CalcVertexRectangle(&boss->T1);
 	ConvertWorldToScreenRectangle(&boss->T1);
-
-	if (CheckRectangleRectangleCollision(&boss->T1, player))
-	{
-
-		boss->T1.knockbackDir = { player->pos.x - boss->T1.pos.x, player->pos.y - boss->T1.pos.y };
-
-		boss->T1.knockbackNormalizedDir = CalculateNormalize(boss->T1.knockbackDir);
-
-		boss->T1.knockback.velocity.x = boss->T1.knockbackNormalizedDir.x * boss->T1.knockbackStrength;
-		boss->T1.knockback.velocity.y = boss->T1.knockbackNormalizedDir.y * boss->T1.knockbackStrength;
-
-		boss->T1.isKnockback = true;
-		
-
-	}
-
-	if(boss->T1.isKnockback)
-	{
-		boss->T1.knockback.velocity.x *= 0.95f;
-		boss->T1.knockback.velocity.y *= 0.95f;
-		player->pos.x += boss->T1.knockback.velocity.x;
-		player->pos.y += boss->T1.knockback.velocity.y;
-	}
-	if (fabs(boss->T1.knockback.velocity.x) < 0.1f || fabs(boss->T1.knockback.velocity.y) < 0.1f)
-	{
-		boss->T1.isKnockback = false;
-		boss->T1.knockback.velocity.x = 0.0f;
-		boss->T1.knockback.velocity.y = 0.0f;
-	}
-	
 
 	// 距離に基づいてインターバル変更
 	if (boss->T1.toPlayerDir < 200.0f)
@@ -72,7 +42,7 @@ void UpdateMoveBossT1(Boss* boss, Player* player)
 	if (boss->T1.actionFrameCounter >= 200)
 	{
 		// ランダムに選択
-		boss->T1.randAction = rand() % 2;
+		boss->T1.randAction = rand() % 3;
 		boss->T1.isAction = true;
 
 
@@ -89,6 +59,11 @@ void UpdateMoveBossT1(Boss* boss, Player* player)
 			InitToSomethingBullet(boss->T1.bulletToPlayer);
 		
 		}
+		else if (boss->T1.randAction == 2)
+		{
+			boss->T1.goUpParticle->isEmit = true;
+			InitGoUpGravityParticle(boss->T1.goUpParticle);
+		}
 
 		// フレームカウンターをリセット
 		boss->T1.actionFrameCounter = 0;
@@ -103,21 +78,101 @@ void UpdateMoveBossT1(Boss* boss, Player* player)
 	{
 		FireToSomethingBullet(boss->T1.bulletToPlayer, &boss->T1.pos, &player->pos);
 	}
+	else if (boss->T1.goUpParticle->isEmit)
+	{
+		UpdateGoUpGravityParticle(boss->T1.goUpParticle, &boss->T1.pos);
+	}
 	else
 	{
 		boss->T1.actionFrameCounter++;
 	}
 
 	UpdateCenterToAroundParticle(boss->T1.aroundParticle, &boss->T1.pos);
-	UpdateGoUpGravityParticle(boss->T1.goUpParticle, &boss->T1.pos);
-	UpdateImpactDustCloudParticle(boss->T1.impactDustParticle, &boss->T1.pos);
+	/*UpdateImpactDustCloudParticle(boss->T1.impactDustParticle, &boss->T1.pos);*/
 	
+	//ノックバック判定
+	KnockbackBossT1Func(boss, player);
 
-	LinearInterpolation(boss->T1.pos, player->pos, boss->T1.pos, boss->T1.MoveEase);
-	CountEaseTimerMoveBossT1(boss->T1.MoveEase);
+	if (boss->T1.canMove)
+	{
+		LinearInterpolation(boss->T1.pos, player->pos, boss->T1.pos, boss->T1.MoveEase);
+		CountEaseTimerMoveBossT1(boss->T1.MoveEase);
+	}
 }
 
 
+
+//ボスT1とのノックバック判定
+void KnockbackBossT1Func(Boss* boss, Player* player)
+{
+	//ノックバック判定
+	ApplyKnockbackPlayer(&boss->T1.knockback, &boss->T1, player, &player->pos, &boss->T1.pos, player);
+
+	if (CheckRectangleRectangleCollision(&boss->T1, player) && !player->knockback.isKnockbacked)
+	{
+		player->HP -= 1;
+
+		player->knockback.isKnockbacked = true;
+	}
+
+	for (int i = 0; i < boss->T1.goUpParticle->amount; ++i)
+	{
+		ApplyKnockbackPlayer(&boss->T1.goUpParticle[i].knockback, &boss->T1.goUpParticle[i], player, &player->pos, &boss->T1.goUpParticle[i].pos, player);
+
+		if (CheckRectangleRectangleCollision(&boss->T1.goUpParticle[i], player) && !player->knockback.isKnockbacked)
+		{
+			player->HP -= 1;
+
+			player->knockback.isKnockbacked = true;
+			break;
+		}
+	}
+
+	for (int i = 0; i < boss->T1.bulletToPlayer->amount; ++i)
+	{
+
+		ApplyKnockbackPlayer(&boss->T1.bulletToPlayer[i].knockback, &boss->T1.bulletToPlayer[i], player, &player->pos, &boss->T1.bulletToPlayer[i].pos, player);
+
+		if (CheckRectangleRectangleCollision(&boss->T1.bulletToPlayer[i], player) && !player->knockback.isKnockbacked)
+		{
+			player->HP -= 1;
+
+			player->knockback.isKnockbacked = true;
+			break;
+		}
+	}
+
+	for (int i = 0; i < boss->T1.bulletSomeway->amount; ++i)
+	{
+
+		ApplyKnockbackPlayer(&boss->T1.bulletSomeway[i].knockback, &boss->T1.bulletSomeway[i], player, &player->pos, &boss->T1.bulletSomeway[i].pos, player);
+
+
+		if (CheckRectangleRectangleCollision(&boss->T1.bulletSomeway[i], player) && !player->knockback.isKnockbacked)
+		{
+			player->HP -= 1;
+
+			player->knockback.isKnockbacked = true;
+			break;
+		}
+	}
+
+	if (player->knockback.isKnockbacked)
+	{
+		player->knockback.frameCount++;
+		player->color = 0xf69922ff;
+	}
+	else
+	{
+		player->color = 0x0000ffff;
+	}
+
+	if (player->knockback.frameCount >= 50)
+	{
+		player->knockback.isKnockbacked = false;
+		player->knockback.frameCount = 0;
+	}
+}
 
 //========================================================
 // ボスの描画処理
@@ -130,8 +185,8 @@ void DrawBoss(Boss* boss)
 		static_cast<int>(boss->T1.screenVertex.leftTop.y),
 		static_cast<int>(boss->T1.screenVertex.rightTop.x),
 		static_cast<int>(boss->T1.screenVertex.rightTop.y),
-		static_cast<int>(boss->T1.screenVertex.lehtBottom.x),
-		static_cast<int>(boss->T1.screenVertex.lehtBottom.y),
+		static_cast<int>(boss->T1.screenVertex.leftBottom.x),
+		static_cast<int>(boss->T1.screenVertex.leftBottom.y),
 		static_cast<int>(boss->T1.screenVertex.rightBottom.x),
 		static_cast<int>(boss->T1.screenVertex.rightBottom.y),
 		0, 0, 0, 0, 0, boss->T1.color);
@@ -139,12 +194,11 @@ void DrawBoss(Boss* boss)
 	DrawCenterToAroundParticle(boss->T1.aroundParticle);
 	DrawGoUpGravityParticle(boss->T1.goUpParticle);
 	DrawImpactDustCloudParticle(boss->T1.impactDustParticle);
-	
 
 	DrawSomewayDirectionBullet(boss->T1.bulletSomeway);
 	DrawToSomethingBullet(boss->T1.bulletToPlayer);
 
-	Novice::ScreenPrintf(20, 100, "%d", boss->T1.isKnockback);
+	Novice::ScreenPrintf(20, 100, "%d", boss->T1.knockback.isKnockback);
 }
 
 //========================================================
@@ -208,43 +262,7 @@ void InitBoss(Boss* boss, Map* map)
 		boss->T1.startChipNo.y = 8;
 	}
 
-	else if (map->stageNo == 4)
-	{
-		boss->T1.startChipNo.x = 7;
-		boss->T1.startChipNo.y = 9;
-	}
-
-	else if (map->stageNo == 5)
-	{
-		boss->T1.startChipNo.x = 10;
-		boss->T1.startChipNo.y = 6;
-	}
-
-	else if (map->stageNo == 6)
-	{
-		boss->T1.startChipNo.x = 9;
-		boss->T1.startChipNo.y = 8;
-	}
-
-	else if (map->stageNo == 7)
-	{
-		boss->T1.startChipNo.x = 10;
-		boss->T1.startChipNo.y = 5;
-	}
-
-	else if (map->stageNo == 8)
-	{
-		boss->T1.startChipNo.x = 9;
-		boss->T1.startChipNo.y = 9;
-	}
-
-	else if (map->stageNo == 9)
-	{
-		boss->T1.startChipNo.x = 13;
-		boss->T1.startChipNo.y = 4;
-	}
-
-	boss->T1.pos = map->chip[boss->T1.startChipNo.y][boss->T1.startChipNo.x].pos;
+	boss->T1.pos = { kWindowWidth / 2,800 };
 
 	boss->T1.currentChipNo = boss->T1.startChipNo;
 	boss->T1.prePos = boss->T1.pos;

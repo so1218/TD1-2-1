@@ -5,6 +5,7 @@
 #include <math.h>
 #include <time.h>
 #include <vector>
+#include <deque>
 
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
@@ -38,6 +39,13 @@ struct IntVector2
 	int y = 0;
 };
 
+struct Vector3
+{
+	float x = 0;
+	float y = 0;
+	float z = 0;
+};
+
 //3x3行列の構造体
 struct Matrix3x3 
 {
@@ -60,13 +68,22 @@ struct Easing
 	float easeTimer = 0.0f;
 	bool isEase = false;
 
+	unsigned int startColor = opaque;
+	int intStartPos = 0;
+	float floatStartPos = 0.0f;
+	Vector2 vec2StartPos = { 0.0f,0.0f };
+
+	unsigned int endColor = opaque;
+	int intEndPos = 0;
+	float floatEndPos = 0.0f;
+	Vector2 vec2EndPos = { 0.0f,0.0f };
 };
 
 // (T = Top, B = Bottom, L = Left, R = Right)
 struct Vertex
 {
 	Vector2 leftTop;
-	Vector2 lehtBottom;
+	Vector2 leftBottom;
 	Vector2 rightTop;
 	Vector2 rightBottom;
 };
@@ -111,6 +128,8 @@ struct RectangleObject
 	float height = 0.0f;
 	Vector2 radius = { 0.0f, 0.0f };
 
+	Vector2 scale = { 1.0f, 1.0f };
+
 };
 
 struct Circle
@@ -123,7 +142,6 @@ struct Circle
 struct GameObject :RectangleObject, PhysicalElements
 {
 	Vector2 eDir = { 1.0f, 0.0f };      //位置の単位ベクトル
-	Vector2 scale = { 1.0f, 1.0f };
 	bool isExist = true;
 	unsigned int color = WHITE;
 	float theta = 0.0f;                 //角度
@@ -244,11 +262,18 @@ struct BitMapFont
 
 };
 
-//カラーの遷移演出などに関する構造体
-struct ChangingColor 
+//カラーに関する構造体
+struct Color
 {
-	unsigned int changingBackColor = BLACK;
+	unsigned int r;  // 赤
+	unsigned int g;  // 緑
+	unsigned int b;  // 青
+	unsigned int a;  // アルファ（透明度）
+
+	Color(unsigned int r = 255, unsigned int g = 255, unsigned int b = 255, unsigned int a = 255)
+		: r(r), g(g), b(b), a(a) {}
 };
+
 
 
 //マップに関する構造体
@@ -294,9 +319,51 @@ struct Map
 
 };
 
+//ノックバックの構造体
+struct Knockback :PhysicalElements
+{
+
+	Vector2 dir;
+	Vector2 normalizedDir;
+	float strength = 10;
+	Easing ease;
+	bool isKnockback = false;
+	bool isKnockbacked = false;
+	int frameCount = 0;
+
+};
+
+//残像の構造体
+struct AfterImage
+{
+	std::deque<Vector2> posHistory;
+	static const int maxHistory = 10;
+	int frameCounter = 0;
+	Vector2 pastPos = {};
+
+	unsigned int colorRGB = 0x000000;
+	float colorAlpha = 0.0f;
+
+};
+
 //パーティクルの構造体
+struct ParticleInitParams
+{
+	Vector2 emitterRange;  
+	float speedMin;        
+	float speedMax;        
+	float gravity;         
+	float width;           
+	float height;   
+	Vector2 startPos;
+	unsigned int colorStart;        
+	unsigned int colorEnd;          
+};
+
 struct Particle :GameObject
 {    
+	bool isEmit = false;
+
 	float lifetime;
 	int direction;
 	int radius = 10;
@@ -307,10 +374,13 @@ struct Particle :GameObject
 	int appearInterval = 20;
 	
 	BlendModeFunc blendMode;
+	Knockback knockback;
 
 	Easing easingInOut;
 	Easing easingOut;
 	Easing easingIn;
+
+	bool hasExisted = false;
 
 	int amount;
 };
@@ -320,8 +390,14 @@ struct Player :GameObject
 {
 	Easing easing;
 	Vector2 scaleOnPtr[3];	
-	Particle aroundParticle[kAmount50];
+	Particle likeSmokeParticle[kAmount50];
 	Particle toCenterParticle[kAmount50];
+
+	int HP = 6;
+
+	bool isDamaged = false;
+
+	Knockback knockback;
 
 	//プレイヤーの向き
 	enum Direction
@@ -332,12 +408,13 @@ struct Player :GameObject
 		right = 3
 	};
 
+	AfterImage afterImage;
+	
 };
 
 
-struct Bullet: GameObject
+struct Bullet :GameObject
 {
-
 	int amount = 16;
 	int directionCount = 16;
 	float angleStep;
@@ -347,6 +424,7 @@ struct Bullet: GameObject
 
 	int appearInterval = 20;
 
+	Knockback knockback;
 };
 
 struct BossType1 :GameObject
@@ -356,28 +434,25 @@ struct BossType1 :GameObject
 	Particle goUpParticle[kAmount50];
 	Particle impactDustParticle[kAmount50];
 
+	bool canMove = false;
+
 	Bullet bulletSomeway[kAmount50];
 	Bullet bulletToPlayer[kAmount50];
 
-	float toPlayerDir;
+	Knockback knockback;
 
-	Vector2 knockbackDir;
-	Vector2 knockbackNormalizedDir;
-	float knockbackStrength = 10;
-	PhysicalElements knockback;
-	Easing knockbackEase;
-	bool isKnockback = false;
+	float toPlayerDir;
 
 	bool isAction = false;
 	int actionFrameCounter = 0;
 	int randAction = 0;
-
+	
 };
 
 struct BossType2 :GameObject
 {
 	Easing MoveEase;
-	float toPlayerDistance;
+	float toPlayerDistance;	
 };
 
 struct Boss
@@ -388,9 +463,12 @@ struct Boss
 //プレイシーンの構造体
 struct PlayScene :GameObject
 {
-
 	Easing fadeIn;
 	Easing fadeOut;
+
+	Easing fadeInBossT1;
+	Particle fadeInBossT1Particle[kAmount50];
+	
 	unsigned int fadeColor = 0x000000ff;
 
 	bool isNextScene = false;
@@ -425,7 +503,10 @@ struct PlayScene :GameObject
 	bool isNextSelect = false;
 
 	GameObject playerHpIcon[3];
+	GameObject playerHpIconEffect[3];
 
+	Easing playerHpEffectEase[3];
+	Easing playerHpEffectOutEase[3];
 };
 
 //タイトルシーンの構造体
@@ -440,8 +521,6 @@ struct TitleScene: GameObject
 	Easing colorEase;
 	
 	GameObject titleLogo;
-
-
 
 	float amplitude;
 	float theta;
