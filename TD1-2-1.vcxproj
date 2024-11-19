@@ -109,6 +109,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BezierCurve.cpp" />
+    <ClCompile Include="BlendMode.cpp" />
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossAction.cpp" />
     <ClCompile Include="C:\KamataEngine\DirectXGame\base\StringUtility.cpp" />
@@ -120,10 +121,12 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
     <ClCompile Include="Calculate.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Easing.cpp" />
     <ClCompile Include="electrode.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GrovalAudio.cpp" />
+    <ClCompile Include="GrovalTextureHandles.cpp" />
     <ClCompile Include="Hit.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -170,9 +173,11 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
     <ClInclude Include="Calculate.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Draw.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="electrode.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GrovalTextureHandles.h" />
     <ClInclude Include="GrovalAudio.h" />
     <ClInclude Include="Hit.h" />
     <ClInclude Include="Map.h" />
@@ -186,6 +191,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="Structures.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Vector.h" />
+    <ClInclude Include="BlendMode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

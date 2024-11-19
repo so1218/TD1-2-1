@@ -3,12 +3,14 @@
 #include "Structures.h"
 
 // ボスの更新処理
-void UpdateMoveBoss(BossType1* bossT1, Player* player);
+void UpdateMoveBoss(Boss* boss, Player* player);
 
-void UpdateMoveBossT1(BossType1* bossT1, Player* player);
+void UpdateMoveBossT1(Boss* boss, Player* player);
+//ボスT1とのノックバック判定
+void KnockbackBossT1Func(Boss* boss, Player* player);
 
 // ボスの描画処理
-void DrawBoss(BossType1* bossT1);
+void DrawBoss(Boss* boss);
 
 //ボスの初期化
-void InitBoss(BossType1* bossT1, Map* map);
+void InitBoss(Boss* boss, Map* map);

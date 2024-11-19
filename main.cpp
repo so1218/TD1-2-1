@@ -7,11 +7,20 @@
 #include "Player.h"
 #include "Rectangle.h"
 #include "SelectScene.h"
+
 #include "Structures.h"
 #include "TitleScene.h"
 #include "map.h"
 
+#include "PlayScene.h"
+#include "Boss.h"
+#include "GrovalAudio.h"
+#include "GrovalTextureHandles.h"
+
+
 const char kWindowTitle[] = "TD2";
+
+int GHs[128];
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -20,14 +29,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     // ライブラリの初期化
     Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
+
     // キー入力結果を受け取る箱
     char keys[256] = { 0 };
     char preKeys[256] = { 0 };
 
+	
+	// GHs 配列を初期化
+	for (int i{ 0 }; i < _countof(GHs); ++i)
+	{
+		GHs[i] = -1;
+	}
+
+	// テクスチャ読み込み
+	TextureManager::LoadTextures();
+
+	// キー入力結果を受け取る箱
+	char keys[256] = { 0 };
+	char preKeys[256] = { 0 };
+
+
 #if defined(_DEBUG)
     Scene currentScene = Title;
 #else
+
     Scene currentScene = Select;
+
+	Scene currentScene = Title;
+
 #endif
 
     int currentTime = static_cast<int>(time(nullptr));
@@ -45,8 +74,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     Electrode electrode;
     Maker maker;
 
+
     InitTitleScene(&ts);
     AudioInitialize();
+
+	int currentTime = static_cast<int>(time(nullptr));
+	srand(currentTime);
+
+	TitleScene ts;
+	SelectScene ss;
+	PlayScene ps;
+	GameManager gm;
+	Map map;
+	Player player;
+	Camera camera;
+	Easing easing;
+	Boss boss;
+
+	InitTitleScene(&ts);
+	AudioInitialize();
+
 
 #if defined(_DEBUG)
     map.stageNo = 0;
@@ -81,13 +128,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             currentScene = UpdateTitleScene(&ts, &ss, &player, &map);
 
+
             break;
+
+			currentScene = UpdateSelectScene(&ss, &map, &player, &boss, &ps, &gm);
+
 
         case Select:
 
             currentScene = UpdateSelectScene(&ss, &map, &player, &bossT1, &ps, &gm);
 
+
             break;
+
+			currentScene = UpdatePlayScene(&ps, &player, &gm, &boss, &ss, &map);
+
 
         case Play:
 
@@ -118,6 +173,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             break;
 
         case Play:
+
+			DrawPlayScene(&ps, &map, &player, &boss);
+
 
             DrawPlayScene(&ps, &map, &player, &bossT1);
 

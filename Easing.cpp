@@ -90,7 +90,7 @@ void CountEaseInOutTimer(const int end, int& current, Easing& easing)
 
 }
 
-void CountEaseInOutTimer(const float end, float& current, Easing& easing) 
+void CountEaseInOutTimer(const float end, float& current, Easing& easing)
 {
 
 	if (easing.timer > 1.0f) {
@@ -144,6 +144,26 @@ void CountEaseOutTimer(Easing& easing)
 
 		easing.timer += easing.interval;
 		easing.easeTimer = EaseOut(easing.timer);
+
+	}
+
+}
+
+//EaseInのイージングタイマー
+void CountEaseInTimer(Easing& easing)
+{
+
+	if (easing.timer > 1.0f) {
+
+		easing.easeTimer = 0.0f;
+		easing.timer = 0.0f;
+		easing.isEase = false;
+
+	}
+	else {
+
+		easing.timer += easing.interval;
+		easing.easeTimer = EaseIn(easing.timer);
 
 	}
 

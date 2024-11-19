@@ -56,3 +56,20 @@ float Bernstein(int n, int i, float t)
 
 
 
+
+}
+
+//ベクトルの正規化の関数
+Vector2 CalculateNormalize(Vector2& vec)
+{
+	float length = sqrtf(vec.x * vec.x + vec.y * vec.y);
+
+	if (length == 0)
+	{
+		return Vector2(0, 0);
+	}
+
+	// 正規化されたベクトルを返す
+	return Vector2(vec.x / length, vec.y / length);
+}
+
