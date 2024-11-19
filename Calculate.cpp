@@ -47,10 +47,15 @@ float Bernstein(int n, int i, float t)
 }
 
 //2点の距離の関数
-float CalculateDistance(const Vector2& a, const Vector2& b) 
-{
+//float CalculateDistance(const Vector2& a, const Vector2& b) 
+//{
+//
+//	return sqrtf((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
+//
+//}
 
-	return sqrtf((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
+
+
 
 }
 
@@ -67,3 +72,4 @@ Vector2 CalculateNormalize(Vector2& vec)
 	// 正規化されたベクトルを返す
 	return Vector2(vec.x / length, vec.y / length);
 }
+

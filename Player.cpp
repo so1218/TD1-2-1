@@ -1,9 +1,13 @@
 ﻿#include "Structures.h"
 #include "Rectangle.h"
 #include "Particle.h"
+
+#include "electrode.h"
+
 #include "Hit.h"
 #include <deque>
 #include "GrovalTextureHandles.h"
+
 
 //========================================================
 // プレイヤーの挙動
@@ -58,6 +62,11 @@ void MovePlayer(Player* player, GameManager* gm)
 		player->pos.y -= player->velocity.y;
 	}
 
+
+	MoveElectrode(player->electrode,player,gm);
+
+	MoveMaker(player);
+
 	//残像の処理
 	player->afterImage.frameCounter++;
 
@@ -75,6 +84,7 @@ void MovePlayer(Player* player, GameManager* gm)
 		// フレームカウンタをリセット
 		player->afterImage.frameCounter = 0;
 	}
+
 
 	CalcVertexRectangle(player);
 	ConvertWorldToScreenRectangle(player);
@@ -130,8 +140,17 @@ void DrawPlayer(Player* player)
 		static_cast<int>(player->screenVertex.rightBottom.y),
 		0, 0, 0, 0, 0, player->color);
 
+
+	DrawGoUpAroundParticle(player->aroundParticle);
+
+	DrawElectrode(player->electrode);
+
+	DrawMaker(player);
+
+
 	DrawLikeSmokeParticle(player->likeSmokeParticle);
 	DrawToCenterParticle(player->toCenterParticle);
+
 
 #if defined(_DEBUG)
 	ScreenPrintfPlayer(player);
@@ -201,5 +220,14 @@ void InitPlayer(Player* player, Map* map)
 
 	player->currentChipNo = player->startChipNo;
 	player->prePos = player->pos;
+
+
+	InitElectrode(player->electrode, player);
+
+	InitMaker(player);
+
+	CalcVertexRectangle(player);
+	ConvertWorldToScreenRectangle(player);
+
 
 }

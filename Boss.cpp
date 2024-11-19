@@ -20,8 +20,12 @@ void UpdateMoveBoss(Boss* boss, Player* player)
 
 void UpdateMoveBossT1(Boss* boss, Player* player)
 {
-	CalcVertexRectangle(&boss->T1);
-	ConvertWorldToScreenRectangle(&boss->T1);
+
+	CalcVertexRectangle(bossT1);
+	ConvertWorldToScreenRectangle(bossT1);
+
+	/*bossT1->toPlayerDistance = CalculateDistance(bossT1->pos, player->pos);*/
+
 
 	// 距離に基づいてインターバル変更
 	if (boss->T1.toPlayerDir < 200.0f)
