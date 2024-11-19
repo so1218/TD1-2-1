@@ -6,6 +6,7 @@
 #include "Particle.h"
 #include "Easing.h"
 #include "PlayScene.h"
+#include"electrode.h"
 
 //========================================================
 // セレクトシーンの更新処理
@@ -94,6 +95,10 @@ Scene UpdateSelectScene(SelectScene* ss, Map* map, Player* player, BossType1* bo
 				InitPlayScene(ps);
 				InitCenterToAroundParticle(bossT1->aroundParticle);
 				InitGoUpAroundParticle(player->aroundParticle);
+
+				
+
+				
 				Novice::SetJoystickDeadZone(0, 8000, 8000); // 左右スティックのデッドゾーンを設定
 
 				nextScene = Play;

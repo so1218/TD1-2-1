@@ -22,7 +22,7 @@ void UpdateMoveBossT1(BossType1* bossT1, Player* player)
 	CalcVertexRectangle(bossT1);
 	ConvertWorldToScreenRectangle(bossT1);
 
-	bossT1->toPlayerDistance = CalculateDistance(bossT1->pos, player->pos);
+	/*bossT1->toPlayerDistance = CalculateDistance(bossT1->pos, player->pos);*/
 
 	// 距離に基づいてインターバル変更
 	if (bossT1->toPlayerDistance < 200.0f)

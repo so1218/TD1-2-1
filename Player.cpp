@@ -1,6 +1,7 @@
 ﻿#include "Structures.h"
 #include "Rectangle.h"
 #include "Particle.h"
+#include "electrode.h"
 
 //========================================================
 // プレイヤーの挙動
@@ -55,7 +56,9 @@ void MovePlayer(Player* player, GameManager* gm)
 		player->pos.y -= player->velocity.y;
 	}
 
-	
+	MoveElectrode(player->electrode,player,gm);
+
+	MoveMaker(player);
 
 	CalcVertexRectangle(player);
 	ConvertWorldToScreenRectangle(player);
@@ -91,6 +94,10 @@ void DrawPlayer(Player* player)
 		0, 0, 0, 0, 0, player->color);
 
 	DrawGoUpAroundParticle(player->aroundParticle);
+
+	DrawElectrode(player->electrode);
+
+	DrawMaker(player);
 
 
 #if defined(_DEBUG)
@@ -184,6 +191,10 @@ void InitPlayer(Player* player, Map* map)
 
 	player->currentChipNo = player->startChipNo;
 	player->prePos = player->pos;
+
+	InitElectrode(player->electrode, player);
+
+	InitMaker(player);
 
 	CalcVertexRectangle(player);
 	ConvertWorldToScreenRectangle(player);

@@ -1,146 +1,143 @@
-#include "Structures.h"
 #include "BezierCurve.h"
-#include "Easing.h"
-#include "map.h"
-#include "Player.h"
-#include "Particle.h"
-#include "Rectangle.h"
-#include "TitleScene.h"
-#include "SelectScene.h"
-#include "PlayScene.h"
 #include "Boss.h"
+#include "Easing.h"
 #include "GrovalAudio.h"
+#include "Particle.h"
+#include "PlayScene.h"
+#include "Player.h"
+#include "Rectangle.h"
+#include "SelectScene.h"
+#include "Structures.h"
+#include "TitleScene.h"
+#include "map.h"
 
 const char kWindowTitle[] = "TD2";
 
 // Windowsアプリでのエントリーポイント(main関数)
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+{
 
-	// ライブラリの初期化
-	Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
+    // ライブラリの初期化
+    Novice::Initialize(kWindowTitle, kWindowWidth, kWindowHeight);
 
-	// キー入力結果を受け取る箱
-	char keys[256] = { 0 };
-	char preKeys[256] = { 0 };
-
-#if defined(_DEBUG)
-	Scene currentScene = Title;
-#else
-	Scene currentScene = Select;
-#endif
-
-
-
-	int currentTime = static_cast<int>(time(nullptr));
-	srand(currentTime);
-
-	TitleScene ts;
-	SelectScene ss;
-	PlayScene ps;
-	GameManager gm;
-	Map map;
-	Player player;
-	Camera camera;
-	Easing easing;
-	BossType1 bossT1;
-
-	InitTitleScene(&ts);
-	AudioInitialize();
+    // キー入力結果を受け取る箱
+    char keys[256] = { 0 };
+    char preKeys[256] = { 0 };
 
 #if defined(_DEBUG)
-	map.stageNo = 0;
+    Scene currentScene = Title;
 #else
-	map.stageNo = 1;
+    Scene currentScene = Select;
 #endif
 
-	//プレイシーンの中に必要な変数を格納
-	ps.gm = &gm;
+    int currentTime = static_cast<int>(time(nullptr));
+    srand(currentTime);
 
-	//タイトルシーンの中に必要な変数を格納
-	ts.gm = &gm;
+    TitleScene ts;
+    SelectScene ss;
+    PlayScene ps;
+    GameManager gm;
+    Map map;
+    Player player;
+    Camera camera;
+    Easing easing;
+    BossType1 bossT1;
+    Electrode electrode;
+    Maker maker;
 
-	//セレクトシーンの中に必要な変数を格納
-	ss.gm = &gm;
+    InitTitleScene(&ts);
+    AudioInitialize();
 
-	// ウィンドウの×ボタンが押されるまでループ
-	while (Novice::ProcessMessage() == 0) {
-		// フレームの開始
-		Novice::BeginFrame();
+#if defined(_DEBUG)
+    map.stageNo = 0;
+#else
+    map.stageNo = 1;
+#endif
 
-		// キー入力を受け取る
-		memcpy(gm.preKeys, gm.keys, 256);
-		Novice::GetHitKeyStateAll(gm.keys);
+    // プレイシーンの中に必要な変数を格納
+    ps.gm = &gm;
 
-		///
-		/// ↓更新処理ここから
-		///
+    // タイトルシーンの中に必要な変数を格納
+    ts.gm = &gm;
 
-		switch (currentScene)
-		{
-		case Title:
+    // セレクトシーンの中に必要な変数を格納
+    ss.gm = &gm;
 
-			currentScene = UpdateTitleScene(&ts, &ss, &player,&map);
+    // ウィンドウの×ボタンが押されるまでループ
+    while (Novice::ProcessMessage() == 0) {
+        // フレームの開始
+        Novice::BeginFrame();
 
-			break;
+        // キー入力を受け取る
+        memcpy(gm.preKeys, gm.keys, 256);
+        Novice::GetHitKeyStateAll(gm.keys);
 
-		case Select:
+        ///
+        /// ↓更新処理ここから
+        ///
 
-			currentScene = UpdateSelectScene(&ss, &map, &player, &bossT1, &ps, &gm);
+        switch (currentScene) {
+        case Title:
 
-			break;
+            currentScene = UpdateTitleScene(&ts, &ss, &player, &map);
 
-		case Play:
+            break;
 
-			currentScene = UpdatePlayScene(&ps, &player, &gm, &bossT1, &ss);
+        case Select:
 
-			break;
+            currentScene = UpdateSelectScene(&ss, &map, &player, &bossT1, &ps, &gm);
 
-		}
+            break;
 
-		///
-		/// ↑更新処理ここまで
-		///
+        case Play:
 
-		///
-		/// ↓描画処理ここから
-		///
+            currentScene = UpdatePlayScene(&ps, &player, &gm, &bossT1, &ss);
 
-		switch (currentScene)
-		{
-		case Title:
+            break;
+        }
 
-			DrawTitleScene(&ts);
+        ///
+        /// ↑更新処理ここまで
+        ///
 
-			break;
+        ///
+        /// ↓描画処理ここから
+        ///
 
-		case Select:
+        switch (currentScene) {
+        case Title:
 
-			DrawSelectScene(&ss, &player);
+            DrawTitleScene(&ts);
 
-			break;
+            break;
 
-		case Play:
+        case Select:
 
-			DrawPlayScene(&ps, &map, &player, &bossT1);
+            DrawSelectScene(&ss, &player);
 
-			break;
+            break;
 
-		}
+        case Play:
 
-		///
-		/// ↑描画処理ここまで
-		///
+            DrawPlayScene(&ps, &map, &player, &bossT1);
 
-		// フレームの終了
-		Novice::EndFrame();
+            break;
+        }
 
-		// ESCキーが押されたらループを抜ける
-		if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
-			break;
-		}
-	}
+        ///
+        /// ↑描画処理ここまで
+        ///
 
-	// ライブラリの終了
-	Novice::Finalize();
-	return 0;
+        // フレームの終了
+        Novice::EndFrame();
+
+        // ESCキーが押されたらループを抜ける
+        if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
+            break;
+        }
+    }
+
+    // ライブラリの終了
+    Novice::Finalize();
+    return 0;
 }
